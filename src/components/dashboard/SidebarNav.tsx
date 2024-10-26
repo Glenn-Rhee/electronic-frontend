@@ -1,5 +1,6 @@
 "use client";
 import {
+  Cable,
   LayoutDashboard,
   Menu,
   Settings,
@@ -57,6 +58,12 @@ export default function SidebarNav() {
               icon: ShoppingCart,
               variant: "ghost",
               href: "/order",
+            },
+            {
+              title: "Products",
+              icon: Cable,
+              variant: "ghost",
+              href: "/products",
             },
             {
               title: "Settings",
