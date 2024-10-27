@@ -1,5 +1,4 @@
 "use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "./DataTable";
 
@@ -100,5 +99,5 @@ export default function TableOrders() {
     },
   ];
 
-  return <DataTable className="mt-4" columns={columns} data={dataOrders} />;
+  return <DataTable url="/orders" className="mt-4" columns={columns} data={dataOrders} />;
 }

@@ -27,7 +27,7 @@ export default function ProductPage() {
           </DialogTrigger>
           <DialogContent aria-describedby="Content of product dialog">
             <DialogHeader>
-              <DialogTitle className="text-xl font-semibold">
+              <DialogTitle className="text-xl font-semibold text-center">
                 Add product
               </DialogTitle>
             </DialogHeader>

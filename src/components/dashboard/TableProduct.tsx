@@ -3,6 +3,24 @@ import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { DataTable } from "./DataTable";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import DialogBody from "./DialogBody";
 
 export default function TableProduct() {
   const dataProduct: Product[] = [
@@ -62,7 +80,13 @@ export default function TableProduct() {
     },
   ];
 
-  return <DataTable className="mt-4" columns={columns} data={dataProduct} />;
+  return (
+    <DataTable
+      className="mt-4"
+      columns={columns}
+      data={dataProduct}
+    />
+  );
 }
 
 type Product = {
@@ -124,16 +148,55 @@ const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "action",
     header: "Action",
-    cell: () => {
+    cell: ({}) => {
       return (
-        <div className="flex gap-3">
-          <Button variant={"default"} size={"sm"}>
-            Edit
-          </Button>
-          <Button variant={"destructive"} size={"sm"}>
-            Delete
-          </Button>
-        </div>
+        <>
+          <div className="flex gap-3">
+            <Dialog>
+              <DialogTrigger>
+                <span className="flex items-center bg-slate-900 text-white h-8 rounded-md px-3 text-xs">
+                  Edit
+                </span>
+              </DialogTrigger>
+              <DialogContent aria-describedby="Dialog edit product">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-semibold text-center">
+                    Edit product
+                  </DialogTitle>
+                </DialogHeader>
+                <DialogBody
+                  data={{
+                    brand: "ACER",
+                    category: "laptop",
+                    id: "1",
+                    productName: "Laptop ACER",
+                    description: "Laptop ACER",
+                    price: 20000000,
+                    stock: 15,
+                    tag: "laptop",
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant={"destructive"} size={"sm"}>
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </>
       );
     },
   },
