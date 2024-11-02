@@ -1,6 +1,7 @@
 "use client";
 import {
   Cable,
+  DollarSign,
   LayoutDashboard,
   Menu,
   Settings,
@@ -36,7 +37,7 @@ export default function SidebarNav() {
           }
         )}
       >
-        <div className="flex justify-center">
+        <div className="flex justify-center">   
           <Profile />
         </div>
         <Nav
@@ -58,6 +59,12 @@ export default function SidebarNav() {
               icon: ShoppingCart,
               variant: "ghost",
               href: "/orders",
+            },
+            {
+              title: "Revenue",
+              icon: DollarSign,
+              variant: "ghost",
+              href: "/revenue",
             },
             {
               title: "Products",

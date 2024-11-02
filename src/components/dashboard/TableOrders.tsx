@@ -99,5 +99,5 @@ export default function TableOrders() {
     },
   ];
 
-  return <DataTable url="/orders" className="mt-4" columns={columns} data={dataOrders} />;
+  return <DataTable className="mt-4" columns={columns} data={dataOrders} />;
 }
