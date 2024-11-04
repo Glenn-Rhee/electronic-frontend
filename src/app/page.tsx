@@ -4,6 +4,7 @@ import Card from "@/components/dashboard/Card/Card";
 import CardContent from "@/components/dashboard/Card/CardContent";
 import ProcessedCard from "@/components/dashboard/Card/ProcessedCard";
 import SalesCard from "@/components/dashboard/Card/SalesCard";
+import OrderRevenue from "@/components/dashboard/OrderRevenue";
 import {
   Table,
   TableBody,
@@ -91,7 +92,10 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col w-full gap-5">
-      <h1 className={cn("text-2xl font-semibold")}>Dashboard</h1>{" "}
+      <div className="flex items-center gap-x-2">
+        <h1 className={cn("text-2xl font-semibold")}>Dashboard</h1>
+        <OrderRevenue />
+      </div>
       <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
         {cardData.map((card, i) => (
           <Card
@@ -122,7 +126,7 @@ export default function HomePage() {
         </CardContent>
         <CardContent className="h-[450px] overflow-scroll">
           <p>Orders Processed</p>
-          
+
           <Table>
             <TableHeader>
               <TableRow>
