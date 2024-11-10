@@ -92,11 +92,11 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col w-full gap-5">
-      <div className="flex items-center gap-x-2">
-        <h1 className={cn("text-2xl font-semibold")}>Dashboard</h1>
+      <div className="flex items-center gap-x-2 order-1 md:order-none">
+        <h1 className={cn("text-2xl font-bold")}>Dashboard</h1>
         <OrderRevenue />
       </div>
-      <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4 order-3 md:order-none">
         {cardData.map((card, i) => (
           <Card
             label={card.label}
@@ -107,11 +107,11 @@ export default function HomePage() {
           />
         ))}
       </section>
-      <CardContent className="h-[500px] transition-all">
+      <CardContent className="h-[500px] transition-all order-2 md:order-none">
         <p className="p-4 font-semibold">Overview</p>
         <BarCart />
       </CardContent>
-      <section className="grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-4 transition-all lg:grid-cols-2 order-4 md:order-none">
         <CardContent className="h-[450px] overflow-scroll">
           <p>Recent Sales</p>
           <p className="text-sm text-gray-400">You made 250 sales this month</p>
@@ -125,7 +125,7 @@ export default function HomePage() {
           ))}
         </CardContent>
         <CardContent className="h-[450px] overflow-scroll">
-          <p>Orders Processed</p>
+          <span>Orders Processed</span>
 
           <Table>
             <TableHeader>

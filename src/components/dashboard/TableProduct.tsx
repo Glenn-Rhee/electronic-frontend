@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import DialogBody from "./DialogBody";
+import Link from "next/link";
 
 export default function TableProduct() {
   const dataProduct: Product[] = [
@@ -78,15 +79,90 @@ export default function TableProduct() {
       stock: 10,
       picture: "/img/prof.jpg",
     },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
+    {
+      id: "ORD271829",
+      name: "Laptop Acer",
+      category: "laptop",
+      brand: "ACER",
+      price: 20000000,
+      stock: 10,
+      picture: "/img/prof.jpg",
+    },
   ];
 
-  return (
-    <DataTable
-      className="mt-4"
-      columns={columns}
-      data={dataProduct}
-    />
-  );
+  return <DataTable className="mt-4" columns={columns} data={dataProduct} />;
 }
 
 type Product = {
@@ -102,8 +178,16 @@ type Product = {
 
 const columns: ColumnDef<Product>[] = [
   {
+    accessorKey: "no",
+    header: "No",
+    cell: ({ row }) => <span>{row.index + 1}</span>,
+  },
+  {
     accessorKey: "id",
     header: "ID",
+    cell: ({ row }) => (
+      <Link href={`/products/${row.original.id}`}>{row.original.id}</Link>
+    ),
   },
   {
     accessorKey: "picture",

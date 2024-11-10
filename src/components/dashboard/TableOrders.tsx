@@ -21,6 +21,11 @@ interface Order {
 
 const columns: ColumnDef<Order>[] = [
   {
+    accessorKey: "no",
+    header: "No",
+    cell: ({ row }) => <span>{row.index + 1}</span>,
+  },
+  {
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => {
