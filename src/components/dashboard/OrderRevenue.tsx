@@ -2,7 +2,7 @@
 import { useRevenue } from "@/lib/store/revenueStore";
 import PopoverClient from "./PopooverClient";
 
-const ordersBy = [
+export const ordersBy = [
   {
     value: "today",
     label: "Today",
@@ -20,6 +20,9 @@ const ordersBy = [
     label: "Last Year",
   },
 ];
+
+export type OrderRevenue = "today" | "lastWeek" | "lastMonth" | "lastYear";
+
 
 export default function OrderRevenue() {
   const { valueOrder, setValueorder } = useRevenue();
