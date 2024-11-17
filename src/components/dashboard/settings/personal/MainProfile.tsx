@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TabsAboutme from "./TabsAboutme";
+import TabsSetProfile from "./TabsSetProfile";
 
 export default function MainProfile() {
   return (
@@ -23,7 +24,9 @@ export default function MainProfile() {
         <TabsContent value="aboutme" className="">
           <TabsAboutme />
         </TabsContent>
-        <TabsContent value="setprofile">B</TabsContent>
+        <TabsContent value="setprofile">
+          <TabsSetProfile />
+        </TabsContent>
       </Tabs>
     </>
   );
