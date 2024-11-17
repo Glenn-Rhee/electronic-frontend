@@ -22,9 +22,15 @@ export default function TabsSetProfile() {
           value="Digital Point Store on Indonesia"
           isSet
         />
+        <ProfileInfo label="Store Category" value="laptop" isSet />
+        <ProfileInfo label="Operational Hours" value="08.00 - 18.00" isSet />
       </ShellProfile>
-      <div  className="flex items-center px-2 justify-center">
-        <Button className="w-full" >Save</Button>
+      <ShellProfile title="Bank Account">
+        <ProfileInfo label="Bank Name" value="BCA" isSet />
+        <ProfileInfo label="Account Number" value="123456789" isSet />
+      </ShellProfile>
+      <div className="flex items-center px-2 justify-center">
+        <Button className="w-full">Save</Button>
       </div>
     </div>
   );

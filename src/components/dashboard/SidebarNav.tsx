@@ -30,7 +30,7 @@ export default function SidebarNav() {
       </button>
       <div
         className={cn(
-          "min-w-[90px] fixed hidden md:relative md:block md:min-w-[90px] border-r px-1 md:px-3 pb-10 pt-20 md:pt-24",
+          "min-w-[90px] fixed hidden md:relative md:block md:min-w-[90px] border-r-slate-800 shadow px-1 md:px-3 pb-10 pt-20 md:pt-24",
           {
             "block bg-[#f2f2f2] inset-y-0 left-0 z-50": isOpen,
           }
