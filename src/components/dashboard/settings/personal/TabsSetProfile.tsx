@@ -1,5 +1,6 @@
 import ShellProfile from "./ShellProfile";
 import ProfileInfo from "./ProfileInfo";
+import { Button } from "@/components/ui/button";
 
 export default function TabsSetProfile() {
   return (
@@ -16,9 +17,15 @@ export default function TabsSetProfile() {
       </ShellProfile>
       <ShellProfile title="Store Information">
         <ProfileInfo label="Store Name" value="Digital Point" isSet />
-        <ProfileInfo label="Store description" value="Digital Point Store on Indonesia" isSet />
-        
+        <ProfileInfo
+          label="Store description"
+          value="Digital Point Store on Indonesia"
+          isSet
+        />
       </ShellProfile>
+      <div  className="flex items-center px-2 justify-center">
+        <Button className="w-full" >Save</Button>
+      </div>
     </div>
   );
 }

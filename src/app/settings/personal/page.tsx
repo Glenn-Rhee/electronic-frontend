@@ -4,7 +4,7 @@ import ShellPersonal from "@/components/dashboard/settings/personal/ShellPersona
 
 export default function SettingsPersonalPage() {
   return (
-    <div className="grid grid-cols-[30%_1fr] gap-x-6">
+    <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] gap-x-6">
       <ShellPersonal>
         <AsideProfile />
       </ShellPersonal>

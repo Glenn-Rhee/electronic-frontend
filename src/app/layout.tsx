@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn("min-h-screen w-full bg-[#f2f2f2] text-black flex")}>
         <SidebarNav />
-        <div className="p-8 w-full">{children}</div>
+        <div className="p-3 md:p-4 lg:p-8 w-full">{children}</div>
       </body>
     </html>
   );

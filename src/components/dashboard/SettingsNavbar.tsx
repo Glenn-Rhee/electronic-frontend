@@ -17,10 +17,6 @@ export default function SettingsNavbar() {
       title: "Personal Info",
       href: "/settings/personal",
     },
-    {
-      title: "Login & Security",
-      href: "/settings/security",
-    },
   ];
 
   return (
