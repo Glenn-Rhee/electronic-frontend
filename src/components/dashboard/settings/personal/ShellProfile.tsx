@@ -13,8 +13,10 @@ export default function ShellProfile({
   return (
     <div className={cn("flex flex-col gap-y-1 px-2 mb-8", className)}>
       <h6 className="font-semibold">{title}</h6>
-      <Separator />
-      <div className="grid grid-cols-1 md:grid-cols-2 mt-1 gap-5">{children}</div>
+      <Separator className="bg-gray-300" />
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-1 gap-5">
+        {children}
+      </div>
     </div>
   );
 }

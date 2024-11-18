@@ -12,9 +12,12 @@ import { Nav } from "./Nav";
 import Profile from "./Profile";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export default function SidebarNav() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const pathname = usePathname();
+  if (pathname.includes("auth")) return null;
 
   return (
     <>

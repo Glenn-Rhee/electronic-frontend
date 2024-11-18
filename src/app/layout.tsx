@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SidebarNav from "@/components/dashboard/SidebarNav";
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Dashboard Admin",
@@ -18,6 +19,7 @@ export default function RootLayout({
       <body className={cn("min-h-screen w-full bg-[#f2f2f2] text-black flex")}>
         <SidebarNav />
         <div className="p-3 md:p-4 lg:p-8 w-full">{children}</div>
+        <Toaster />
       </body>
     </html>
   );
