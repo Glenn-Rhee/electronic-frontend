@@ -9,30 +9,23 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 import SubTitle from "@/components/dashboard/auth/SubTitle";
 import AuthAction from "./AuthAction";
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { ResponseDefault } from "@/types";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   username: z
@@ -44,11 +37,17 @@ const formSchema = z.object({
     .string()
     .min(8, { message: "Password must be at least 8 characters" }),
   confirmPassword: z.string(),
-  phone: z.string().min(10, { message: "Invalid phone number" }),
+  phone: z
+    .string()
+    .min(10, { message: "Phone number must be at least 10 " })
+    .refine((value) => {
+      const phoneNumber = parsePhoneNumberFromString("+62" + value);
+      return phoneNumber && phoneNumber.isValid();
+    }),
+  dateOfBirth: z.string().date("Invalid date of birth"),
 });
 
 export default function SignupForm() {
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,20 +57,107 @@ export default function SignupForm() {
       password: "",
       confirmPassword: "",
       phone: "",
+      dateOfBirth: "",
     },
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [gender, setGender] = useState<"MALE" | "FEMALE" | "">("");
+  const router = useRouter();
 
-  const [date, setDate] = useState<Date>();
+  const date = form.watch("dateOfBirth");
+  const phone = form.watch("phone");
+  const { toast } = useToast();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    if (!date) {
+  console.log(gender);
+
+  useEffect(() => {
+    const regex = /[^0-9-]/g;
+    if (regex.test(date)) {
+      form.setValue("dateOfBirth", date.replace(regex, ""));
+    }
+
+    if (date.length === 5 && !date.endsWith("-")) {
+      const year = date.slice(0, 4);
+      const result = date.charAt(date.length - 1);
+      form.setValue("dateOfBirth", year + "-" + result);
+    }
+
+    if (date.length === 8 && !date.endsWith("-")) {
+      const year = date.slice(0, 7);
+      const result = date.charAt(date.length - 1);
+      form.setValue("dateOfBirth", year + "-" + result);
+    }
+
+    if (date.length !== 5 && date.length !== 8 && date.endsWith("-")) {
+      form.setValue("dateOfBirth", date.slice(0, -1));
+    }
+  }, [date, form]);
+
+  useEffect(() => {
+    const regex = /[^0-9]/g;
+    if (regex.test(phone)) {
+      form.setValue("phone", phone.replace(regex, ""));
+    }
+  }, [phone, form]);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    try {
+      console.log(values);
+      const ismatch = values.password === values.confirmPassword;
+      if (!ismatch) {
+        throw new Error("Password doesn't match!");
+      }
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BASE_URL! + "/user/auth/signup?from=dashboard",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullname: values.fullname,
+            gender,
+            phone: "+62" + values.phone,
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            dateOfBirth: values.dateOfBirth
+          }),
+        }
+      );
+
+      const dataResponse = (await response.json()) as ResponseDefault;
+      console.log(dataResponse);
+
+      if (dataResponse.status === "failed") {
+        throw new Error(dataResponse.message);
+      }
+
       toast({
-        title: "Failed to sign up",
-        variant: "destructive",
-        description: "Please select your date of birth",
+        title: "Success!",
+        description: dataResponse.message,
+        variant: "default",
       });
-      return;
+
+      router.push("/");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error!",
+          description: error.message as string,
+          variant: "destructive",
+        });
+      } else {
+        console.log(error);
+        toast({
+          title: "Error!",
+          description: "An unknown error occurred.",
+          variant: "destructive",
+        });
+      }
+
+      setIsLoading(false);
     }
   }
   return (
@@ -95,7 +181,11 @@ export default function SignupForm() {
             />
             <div className="space-y-2">
               <span className="text-sm">Gender</span>
-              <Select>
+              <Select
+                onValueChange={(val) => {
+                  setGender(val.toUpperCase() as "MALE" | "FEMALE" | "");
+                }}
+              >
                 <SelectTrigger className="text-gray-500">
                   <SelectValue placeholder="Select your gender" />
                 </SelectTrigger>
@@ -106,37 +196,25 @@ export default function SignupForm() {
               </Select>
             </div>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <div className="space-y-2">
-                  <span className="text-sm" role="label">
-                    Birth of date
-                  </span>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal border-gray-400",
-                      !date && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon />
-                    {date ? (
-                      format(date!, "PPP")
-                    ) : (
-                      <span>Pick your bithday</span>
-                    )}
-                  </Button>
-                </div>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
+            <FormField
+              control={form.control}
+              name="dateOfBirth"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Date of Birth</FormLabel>
+                  <FormControl className="flex items-center gap-x-4">
+                    <Input
+                      inputMode="numeric"
+                      type="text"
+                      placeholder="YYYY-MM-DD"
+                      maxLength={10}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -145,7 +223,19 @@ export default function SignupForm() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="08********" {...field} type="text" />
+                    <div className="max-h-9 flex items-center border border-gray-400 rounded overflow-hidden focus-within:ring-1 focus-within:ring-ring focus-within:outline-none">
+                      <span className="text-gray-500 text-sm bg-gray-200 py-2 px-2">
+                        +62
+                      </span>
+                      <Input
+                        inputMode="numeric"
+                        className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 px-1"
+                        placeholder="812345678"
+                        maxLength={13}
+                        {...field}
+                        type="text"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -224,7 +314,11 @@ export default function SignupForm() {
           </div>
         </div>
 
-        <AuthAction href="/auth/login" textGoTo="Already have an account?">
+        <AuthAction
+          href="/auth/login"
+          textGoTo="Already have an account?"
+          isLoading={isLoading}
+        >
           Signup
         </AuthAction>
       </form>
