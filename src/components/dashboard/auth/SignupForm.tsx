@@ -68,8 +68,6 @@ export default function SignupForm() {
   const phone = form.watch("phone");
   const { toast } = useToast();
 
-  console.log(gender);
-
   useEffect(() => {
     const regex = /[^0-9-]/g;
     if (regex.test(date)) {
@@ -122,15 +120,27 @@ export default function SignupForm() {
             username: values.username,
             email: values.email,
             password: values.password,
-            dateOfBirth: values.dateOfBirth
+            dateOfBirth: values.dateOfBirth,
           }),
+          credentials: "include",
         }
       );
 
       const dataResponse = (await response.json()) as ResponseDefault;
-      console.log(dataResponse);
 
       if (dataResponse.status === "failed") {
+        if (
+          dataResponse.statusCode === 402 ||
+          dataResponse.message.includes("loged")
+        ) {
+          toast({
+            title: "Error!",
+            description: dataResponse.message as string,
+            variant: "destructive",
+          });
+
+          router.push("/");
+        }
         throw new Error(dataResponse.message);
       }
 

@@ -274,7 +274,18 @@ const columns: ColumnDef<Product>[] = [
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel
+                    onClick={async () => {
+                      const response = await fetch(
+                        process.env.NEXT_PUBLIC_BASE_URL + "/user",
+                        { method: "GET", credentials: "include" }
+                      );
+                      const dataresponse = await response.json();
+                      console.log(dataresponse);
+                    }}
+                  >
+                    Cancel
+                  </AlertDialogCancel>
                   <AlertDialogAction>Continue</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
