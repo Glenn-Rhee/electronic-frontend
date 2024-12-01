@@ -47,7 +47,7 @@ export default async function HomePage() {
   return (
     <>
       {errorMsg ? (
-        <ErrorUi>Error!</ErrorUi>
+        <ErrorUi>{errorMsg}</ErrorUi>
       ) : dataTransactions.length > 0 ? (
         <Dashboard dataTransaction={dataTransactions} />
       ) : (
