@@ -1,4 +1,5 @@
 import ErrorUi from "@/components/dashboard/ErrorUi";
+import ImageEmpty from "@/components/dashboard/ImageEmpty";
 import TableEmpty from "@/components/dashboard/TableEmpty";
 import TableShell from "@/components/dashboard/TableShell";
 import TableUsers from "@/components/dashboard/TableUsers";
@@ -62,6 +63,8 @@ export default async function UserPage() {
       </div>
     </TableShell>
   ) : (
-    <TableEmpty />
+    <TableEmpty title="Your Table user is empty!">
+      <ImageEmpty src="/img/table-user.png" alt="Empty User table" />
+    </TableEmpty>
   );
 }

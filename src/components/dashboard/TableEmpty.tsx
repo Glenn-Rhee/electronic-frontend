@@ -1,12 +1,17 @@
 import EmptyShell from "./EmptyShell";
-import ImageEmpty from "./ImageEmpty";
 import EmptyTitle from "./EmptyTitle";
 
-export default function TableEmpty() {
+export default function TableEmpty({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <EmptyShell className="md:pt-44">
-      <ImageEmpty src="/img/table-user.png" alt="Empty Table user" />
-      <EmptyTitle>Your table user is empty!</EmptyTitle>
+      {children}
+      <EmptyTitle>{title}</EmptyTitle>
     </EmptyShell>
   );
 }
