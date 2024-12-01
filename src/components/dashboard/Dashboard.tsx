@@ -1,3 +1,5 @@
+"use client";
+import { DataTransaction } from "@/app/page";
 import BarCart from "@/components/dashboard/Barcart";
 import Card from "@/components/dashboard/Card/Card";
 import CardContent from "@/components/dashboard/Card/CardContent";
@@ -33,7 +35,12 @@ interface SalesCardProps {
   saleAmount: number;
 }
 
-export default function Dashboard() {
+interface DashboardProps {
+  dataTransaction: DataTransaction[] | [];
+}
+
+export default function Dashboard(props: DashboardProps) {
+  const { dataTransaction } = props;
   const cardData: CardProps[] = [
     {
       label: "Total Revenue",

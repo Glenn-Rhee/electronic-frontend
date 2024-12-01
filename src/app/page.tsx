@@ -1,18 +1,58 @@
-export default function HomePage() {
+import Dashboard from "@/components/dashboard/Dashboard";
+import EmptyDashboard from "@/components/dashboard/EmptyDashboard";
+import ErrorUi from "@/components/dashboard/ErrorUi";
+import { ResponseDefault } from "@/types";
+import { cookies } from "next/headers";
+
+export interface DataTransaction {
+  id: string;
+  userId: string;
+  storeId: string;
+  orderId: string;
+  status: "PROCESSING" | "COMPLETED" | "CANCELED";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export default async function HomePage() {
+  const xtr = cookies().get("xtr")?.value;
+  let dataTransactions: DataTransaction[] | [] = [];
+  let errorMsg: string | null = null;
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BASE_URL + "/transaction",
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: xtr || "",
+        },
+      }
+    );
+
+    const dataResponse = (await response.json()) as ResponseDefault;
+    if (dataResponse.status === "failed") {
+      throw new Error(dataResponse.message);
+    }
+
+    dataTransactions = dataResponse.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      errorMsg = error.message;
+    } else {
+      errorMsg = "Internal Server Error";
+    }
+  }
+
   return (
-    <div className="flex items-center justify-center w-full pt-40 md:pt-20">
-      {/* <div className="space-y-4 flex flex-col items-center">
-        <Image
-          src={"/img/Dashboard.png"}
-          alt="Empty Dashboard"
-          height={225}
-          width={400}
-          className="aspect-auto w-auto"
-        />
-        <h3 className="font-bold text-xl text-center md:text-2xl">
-          Your Dashboard is Empty!
-        </h3>
-      </div> */}
-    </div>
+    <>
+      {errorMsg ? (
+        <ErrorUi>Error!</ErrorUi>
+      ) : dataTransactions.length > 0 ? (
+        <Dashboard dataTransaction={dataTransactions} />
+      ) : (
+        <EmptyDashboard />
+      )}
+    </>
   );
 }
