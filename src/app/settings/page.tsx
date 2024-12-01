@@ -1,105 +1,53 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Dispatch, SetStateAction, useState } from "react";
+import ErrorUi from "@/components/dashboard/ErrorUi";
+import Settings from "@/components/dashboard/settings/Settings";
+import { ResponseDefault } from "@/types";
+import { cookies } from "next/headers";
 
-interface SettingOptions<Tvalue> {
-  placeholder: string;
-  selectValue: Tvalue;
-  setValue: Dispatch<SetStateAction<"able" | "disable">>;
-  selects: { value: Tvalue; label: string }[];
+export type SettingsState = "ABLE" | "DISABLE";
+
+export interface DataSettings {
+  id: string;
+  userId: string;
+  revenue: SettingsState;
+  users: SettingsState;
+  sales: SettingsState;
+  orders: SettingsState;
 }
 
-export default function SettingsPage() {
-  const [revenue, setRevenue] = useState<"able" | "disable">("able");
-  const [users, setusers] = useState<"able" | "disable">("able");
-  const [sales, setSales] = useState<"able" | "disable">("able");
-  const [orders, setOrders] = useState<"able" | "disable">("able");
+export default async function SettingsPage() {
+  const xtr = cookies().get("xtr")?.value;
+  let dataSettings: DataSettings | null = null;
+  let errorMsg: string | null = null;
 
-  const selects: SettingOptions<"able" | "disable">["selects"] = [
-    {
-      value: "able",
-      label: "Able",
-    },
-    {
-      value: "disable",
-      label: "Disable",
-    },
-  ];
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BASE_URL + "/settings",
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: xtr || "",
+        },
+      }
+    );
 
-  const settingOptions: SettingOptions<"able" | "disable">[] = [
-    {
-      placeholder: "Able revenue",
-      selectValue: revenue,
-      setValue: setRevenue,
-      selects,
-    },
-    {
-      placeholder: "Able users",
-      selectValue: users,
-      setValue: setusers,
-      selects,
-    },
-    {
-      placeholder: "Able sales",
-      selectValue: sales,
-      setValue: setSales,
-      selects,
-    },
-    {
-      placeholder: "Able procesed orders",
-      selectValue: orders,
-      setValue: setOrders,
-      selects,
-    },
-  ];
+    const dataResponse = (await response.json()) as ResponseDefault;
+    if (dataResponse.status === "failed") {
+      throw new Error(dataResponse.message);
+    }
 
-  return (
-    <div className="mt-4">
-      <div className="flex flex-col gap-y-2">
-        <h4 className="font-semibold text-lg">Dashboard page</h4>
-        <Separator className="mb-2 bg-gray-400 h-[1px]" />
-        <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
-          {settingOptions.map((opt, i) => (
-            <div className="px-1" key={i}>
-              <Label className="font-medium">{opt.placeholder}</Label>
-              <Select
-                onValueChange={(e) => opt.setValue(e as "able" | "disable")}
-              >
-                <SelectTrigger className="">
-                  <SelectValue
-                    placeholder={
-                      opt.selectValue.charAt(0).toUpperCase() +
-                      opt.selectValue.slice(1)
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {opt.selects.map((opt, i) => (
-                      <SelectItem key={i} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-          ))}
-        </div>
-        <Button className="mt-10 w-min text-lg font-semibold hover:bg-green-600  bg-green-500 text-white">
-          Save
-        </Button>
-      </div>
-    </div>
+    dataSettings = dataResponse.data;
+  } catch (error) {
+    if (error instanceof Error) {
+      errorMsg = error.message;
+    } else {
+      errorMsg = "Internal Server Error";
+    }
+  }
+
+  return errorMsg ? (
+    <ErrorUi>{errorMsg}</ErrorUi>
+  ) : (
+    <Settings data={dataSettings} />
   );
 }
