@@ -1,4 +1,7 @@
 import DialogBody from "@/components/dashboard/DialogBody";
+import ErrorUi from "@/components/dashboard/ErrorUi";
+import ImageEmpty from "@/components/dashboard/ImageEmpty";
+import TableEmpty from "@/components/dashboard/TableEmpty";
 import TableProduct from "@/components/dashboard/TableProduct";
 import {
   Dialog,
@@ -8,9 +11,58 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { ResponseDefault } from "@/types";
+import { cookies } from "next/headers";
 
-export default function ProductPage() {
-  return (
+export interface DataProducts {
+  id: string;
+  storeId: string;
+  productName: string;
+  category: "LAPTOP" | "ACCESSORIES";
+  brand: string;
+  description: string;
+  urlImage: string;
+  price: number;
+  stock: number;
+  discount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export default async function ProductPage() {
+  const xtr = cookies().get("xtr")?.value;
+  let dataProducts: DataProducts[] | [] = [];
+  let errorMsg: string | null = null;
+
+  try {
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_BASE_URL + "/product",
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: xtr || "",
+        },
+      }
+    );
+
+    const dataResponse = (await response.json()) as ResponseDefault;
+    if (dataResponse.status === "failed") {
+      throw new Error(dataResponse.message);
+    }
+
+    dataProducts = dataProducts;
+  } catch (error) {
+    if (error instanceof Error) {
+      errorMsg = error.message;
+    } else {
+      errorMsg = "Internal server error!";
+    }
+  }
+
+  return errorMsg ? (
+    <ErrorUi>{errorMsg}</ErrorUi>
+  ) : dataProducts.length > 0 ? (
     <div className="w-full">
       <h1 className="text-3xl font-bold">Products Table</h1>
       <div className="flex justify-between gap-2 items-center mt-4">
@@ -37,5 +89,9 @@ export default function ProductPage() {
       </div>
       <TableProduct />
     </div>
+  ) : (
+    <TableEmpty title="Your product is empty" isProduct>
+      <ImageEmpty src="/img/table-product.png" alt="Product empty" />
+    </TableEmpty>
   );
 }
