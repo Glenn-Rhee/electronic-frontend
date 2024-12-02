@@ -1,14 +1,26 @@
+import { DataUser } from "@/app/settings/personal/page";
 import ProfileInfo from "./ProfileInfo";
 import ShellProfile from "./ShellProfile";
 
-export default function TabsAboutme() {
+interface TabsAboutmeProps {
+  dataUser: DataUser;
+}
+
+export default function TabsAboutme(props: TabsAboutmeProps) {
+  const { dataUser } = props;
+  const date = new Date(dataUser.dataOfBirth);
+  const formattedDate = date.toISOString().slice(0, 10);
+  const gender =
+    dataUser.gender.charAt(0).toUpperCase() +
+    dataUser.gender.slice(1).toLowerCase();
+
   return (
     <div className="mt-4">
       <ShellProfile title="Personal Identity">
-        <ProfileInfo label="Username" value="Arielrizki" />
-        <ProfileInfo label="Fullname" value="Ariel Rizki" />
-        <ProfileInfo label="Gender" value="Male" />
-        <ProfileInfo label="Date of birth" value="01/01/2001" />
+        <ProfileInfo label="Username" value={dataUser.username} />
+        <ProfileInfo label="Fullname" value={dataUser.fullname} />
+        <ProfileInfo label="Gender" value={gender} />
+        <ProfileInfo label="Date of birth" value={formattedDate} />
       </ShellProfile>
       <ShellProfile title="Store Information">
         <ProfileInfo label="Store Name" value="Digital Point" />

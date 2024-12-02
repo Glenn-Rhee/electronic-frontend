@@ -1,9 +1,15 @@
+import { DataUser } from "@/app/settings/personal/page";
 import ItemContact from "@/components/dashboard/settings/personal/ItemContact";
 import { Separator } from "@/components/ui/separator";
 import { Instagram, LocateFixed, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 
-export default function AsideProfile() {
+interface AsideProfileProps {
+  dataUser: DataUser;
+}
+
+export default function AsideProfile(props: AsideProfileProps) {
+  const { dataUser } = props;
   return (
     <>
       <div className="flex flex-col gap-y-1 items-center">
@@ -23,25 +29,25 @@ export default function AsideProfile() {
         <div className="flex flex-col gap-y-4 mt-4">
           <ItemContact
             label="Phone"
-            value="08123456789"
+            value={dataUser.phone}
             icon={Phone}
             className="text-blue-500"
           />
           <ItemContact
             label="Email"
-            value="glennviktor5@gmail.com"
+            value={dataUser.email}
             icon={Mail}
             className="text-red-400"
           />
           <ItemContact
             label="Address"
-            value="Depok"
+            value={dataUser.address === "" ? "-" : dataUser.address}
             className="text-red-600"
             icon={LocateFixed}
           />
           <ItemContact
             label="Instagram"
-            value="@glennviktor"
+            value={dataUser.sosmed === "" ? "-" : dataUser.sosmed}
             className="bg-gradient-to-r text-pink-500"
             icon={Instagram}
           />

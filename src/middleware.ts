@@ -20,7 +20,7 @@ export const config = {
   matcher: [
     "/auth/:path*",
     "/users/:path*",
-    "/settiings/:path*",
+    "/settings/:path*",
     "/products/:path*",
     "/orders/:path*",
     "/:path"
