@@ -1,8 +1,14 @@
 import ShellProfile from "./ShellProfile";
 import ProfileInfo from "./ProfileInfo";
 import { Button } from "@/components/ui/button";
+import { DataStore } from "@/app/settings/personal/page";
 
-export default function TabsSetProfile() {
+interface TabsSetProfileProps {
+  dataStore: DataStore;
+}
+
+export default function TabsSetProfile(props: TabsSetProfileProps) {
+  const { dataStore } = props;
   return (
     <div className="mt-4">
       <ShellProfile title="Contact">

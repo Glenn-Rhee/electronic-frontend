@@ -1,14 +1,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TabsAboutme from "./TabsAboutme";
 import TabsSetProfile from "./TabsSetProfile";
-import { DataUser } from "@/app/settings/personal/page";
+import { DataStore, DataUser } from "@/app/settings/personal/page";
 
 interface MainProfileProps {
   dataUser: DataUser;
+  dataStore: DataStore;
 }
 
 export default function MainProfile(props: MainProfileProps) {
-  const { dataUser } = props;
+  const { dataUser, dataStore } = props;
   return (
     <>
       <h5 className="text-lg font-semibold">Personal Information</h5>
@@ -28,10 +29,10 @@ export default function MainProfile(props: MainProfileProps) {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="aboutme" className="">
-          <TabsAboutme dataUser={dataUser} />
+          <TabsAboutme dataUser={dataUser} dataStore={dataStore} />
         </TabsContent>
         <TabsContent value="setprofile">
-          <TabsSetProfile />
+          <TabsSetProfile dataStore={dataStore} />
         </TabsContent>
       </Tabs>
     </>
