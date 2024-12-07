@@ -13,8 +13,14 @@ import Profile from "./Profile";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { DataStore } from "@/app/settings/personal/page";
 
-export default function SidebarNav() {
+interface SidebarNavProps {
+  dataStore: DataStore;
+}
+
+export default function SidebarNav(props: SidebarNavProps) {
+  const { dataStore } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
   if (pathname.includes("auth")) return null;
@@ -40,7 +46,7 @@ export default function SidebarNav() {
         )}
       >
         <div className="flex justify-center">
-          <Profile />
+          <Profile dataStore={dataStore} />
         </div>
         <Nav
           links={[

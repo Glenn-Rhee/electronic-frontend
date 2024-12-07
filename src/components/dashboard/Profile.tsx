@@ -1,5 +1,5 @@
 "use client";
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,8 +13,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
+import { DataStore } from "@/app/settings/personal/page";
 
-export default function Profile() {
+interface ProfileProps {
+  dataStore: DataStore;
+}
+
+export default function Profile(props: ProfileProps) {
+  const { dataStore } = props;
   const { toast } = useToast();
   const router = useRouter();
 
@@ -58,27 +64,25 @@ export default function Profile() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-fit w-fit mb-2">
-            <Avatar className="shadow-lg shadow-black/25">
-              <AvatarImage src="/img/prof.jpg" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
+            {Object.keys(dataStore).length === 0 ? (
+              <div className="rounded-full bg-gray-400 flex items-center justify-center p-4">
+                <User size={50} color="white" />
+              </div>
+            ) : (
+              <Avatar className="shadow-lg shadow-black/25">
+                <AvatarImage src={dataStore.urlImage} />
+
+                <AvatarFallback>
+                  {dataStore.storeName.split(" ")[0][0].toUpperCase() +
+                    dataStore.storeName.split(" ")[0][0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="my-3">
-            <button className="flex justify-center items-center">
-              {/* {darkMode ? (
-                <Moon className="mr-2 h-4 w-4" />
-              ) : (
-                <Sun className="mr-2 h-4 w-4" />
-              )}
-              <Switch />
-              <span>{darkMode ? "Dark Mode" : "Light Mode"}</span> */}
-              <span>Dark Mode</span>
-            </button>
-          </DropdownMenuItem>
           <DropdownMenuItem>
             <button
               className="flex justify-center items-center"
