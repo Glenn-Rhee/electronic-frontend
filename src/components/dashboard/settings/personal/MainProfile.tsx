@@ -32,7 +32,7 @@ export default function MainProfile(props: MainProfileProps) {
           <TabsAboutme dataUser={dataUser} dataStore={dataStore} />
         </TabsContent>
         <TabsContent value="setprofile">
-          <TabsSetProfile dataStore={dataStore} />
+          <TabsSetProfile dataStore={dataStore} dataUser={dataUser} />
         </TabsContent>
       </Tabs>
     </>

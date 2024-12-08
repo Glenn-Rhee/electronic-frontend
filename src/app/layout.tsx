@@ -3,10 +3,6 @@ import "./globals.css";
 import SidebarNav from "@/components/dashboard/SidebarNav";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-import { cookies } from "next/headers";
-import { DataStore } from "./settings/personal/page";
-import { ResponseDefault } from "@/types";
-import ErrorUi from "@/components/dashboard/ErrorUi";
 
 export const metadata: Metadata = {
   title: "Dashboard Admin",
@@ -18,45 +14,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const xtr = cookies().get("xtr")?.value;
-  let dataStore: DataStore | null = null;
-  let errorMsg: string | null = "";
-
-  try {
-    const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/store", {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        Authorization: xtr || "",
-      },
-    });
-
-    const dataResponse = (await response.json()) as ResponseDefault;
-    if (dataResponse.status === "failed") {
-      throw new Error(dataResponse.message);
-    }
-
-    dataStore = dataResponse.data;
-  } catch (error) {
-    if (error instanceof Error) {
-      errorMsg = error.message;
-    } else {
-      errorMsg = "Internal Server erorr!";
-    }
-  }
-
   return (
     <html lang="en">
       <body className={cn("min-h-screen w-full bg-[#f2f2f2] text-black flex")}>
-        {errorMsg || !dataStore ? (
-          <ErrorUi>{errorMsg}</ErrorUi>
-        ) : (
-          <>
-            <SidebarNav dataStore={dataStore} />
-            <div className="p-3 md:p-4 lg:p-8 w-full">{children}</div>
-            <Toaster />
-          </>
-        )}
+        <SidebarNav />
+        <div className="p-3 md:p-4 lg:p-8 w-full">{children}</div>
+        <Toaster />
       </body>
     </html>
   );

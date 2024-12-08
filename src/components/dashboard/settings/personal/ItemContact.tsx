@@ -17,7 +17,7 @@ export default function ItemContact(props: ItemContactProps) {
   return (
     <div className="flex items-center gap-x-5">
       <props.icon className={className} />
-      <ProfileInfo label={label} value={value} />
+      <ProfileInfo label={label}>{value}</ProfileInfo>
     </div>
   );
 }

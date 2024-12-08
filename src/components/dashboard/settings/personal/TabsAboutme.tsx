@@ -18,52 +18,36 @@ export default function TabsAboutme(props: TabsAboutmeProps) {
   return (
     <div className="mt-4">
       <ShellProfile title="Personal Identity">
-        <ProfileInfo label="Username" value={dataUser.username} />
-        <ProfileInfo label="Fullname" value={dataUser.fullname} />
-        <ProfileInfo label="Gender" value={gender} />
-        <ProfileInfo label="Date of birth" value={formattedDate} />
+        <ProfileInfo label="Username">{dataUser.username}</ProfileInfo>
+        <ProfileInfo label="Fullname">{dataUser.fullname}</ProfileInfo>
+        <ProfileInfo label="Gender">{gender}</ProfileInfo>
+        <ProfileInfo label="Date of birth">{formattedDate}</ProfileInfo>
       </ShellProfile>
       <ShellProfile title="Store Information">
-        <ProfileInfo
-          label="Store Name"
-          value={
-            Object.keys(dataStore).length === 0 ? "-" : dataStore.storeName
-          }
-        />
-        <ProfileInfo
-          label="Store description"
-          value={
-            Object.keys(dataStore).length === 0
-              ? "-"
-              : dataStore.storeDescription
-          }
-        />
-        <ProfileInfo
-          label="Store Category"
-          value={
-            Object.keys(dataStore).length === 0 ? "-" : dataStore.storeCategory
-          }
-        />
-        <ProfileInfo
-          label="Operational Hours"
-          value={
-            Object.keys(dataStore).length === 0
-              ? "-"
-              : `${dataStore.openStore} - ${dataStore.closeStore}`
-          }
-        />
+        <ProfileInfo label="Store Name">
+          {Object.keys(dataStore).length === 0 ? "-" : dataStore.storeName}
+        </ProfileInfo>
+        <ProfileInfo label="Store description">
+          {Object.keys(dataStore).length === 0
+            ? "-"
+            : dataStore.storeDescription}
+        </ProfileInfo>
+        <ProfileInfo label="Store Category">
+          {Object.keys(dataStore).length === 0 ? "-" : dataStore.storeCategory}
+        </ProfileInfo>
+        <ProfileInfo label="Operational Hours">
+          {Object.keys(dataStore).length === 0
+            ? "-"
+            : `${dataStore.openStore} - ${dataStore.closeStore}`}
+        </ProfileInfo>
       </ShellProfile>
       <ShellProfile title="Bank Account">
-        <ProfileInfo
-          label="Bank Name"
-          value={Object.keys(dataStore).length === 0 ? "-" : dataStore.bankName}
-        />
-        <ProfileInfo
-          label="Account Number"
-          value={
-            Object.keys(dataStore).length === 0 ? "-" : dataStore.accountNumber
-          }
-        />
+        <ProfileInfo label="Bank Name">
+          {Object.keys(dataStore).length === 0 ? "-" : dataStore.bankName}
+        </ProfileInfo>
+        <ProfileInfo label="Account Number">
+          {Object.keys(dataStore).length === 0 ? "-" : dataStore.accountNumber}
+        </ProfileInfo>
       </ShellProfile>
     </div>
   );
