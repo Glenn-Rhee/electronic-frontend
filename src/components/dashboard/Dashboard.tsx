@@ -40,6 +40,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard(props: DashboardProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { dataTransaction } = props;
   const cardData: CardProps[] = [
     {

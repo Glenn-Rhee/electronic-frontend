@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
+import InputPhone from "../InputPhone";
 
 const formSchema = z.object({
   username: z
@@ -233,10 +234,7 @@ export default function SignupForm() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <div className="max-h-9 flex items-center border border-gray-400 rounded overflow-hidden focus-within:ring-1 focus-within:ring-ring focus-within:outline-none">
-                      <span className="text-gray-500 text-sm bg-gray-200 py-2 px-2">
-                        +62
-                      </span>
+                    <InputPhone>
                       <Input
                         inputMode="numeric"
                         className="border-none focus:border-none focus:ring-0 focus:outline-none focus-visible:ring-0 px-1"
@@ -245,7 +243,7 @@ export default function SignupForm() {
                         {...field}
                         type="text"
                       />
-                    </div>
+                    </InputPhone>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

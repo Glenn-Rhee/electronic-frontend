@@ -16,6 +16,7 @@ import { DataUserState } from "./TabsSetProfile";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import InputPhone from "../../InputPhone";
 
 interface ProfileInfoProps {
   label: string;
@@ -94,6 +95,36 @@ export default function ProfileInfo(props: ProfileInfoProps) {
                 });
               }}
             />
+          ) : label.includes("Phone") ? (
+            <InputPhone>
+              <Input
+                id={label}
+                className="border border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none placeholder:text-sm placeholder:text-gray-600"
+                type="text"
+                value={
+                  value[
+                    (label.split(" ").length > 1
+                      ? label.split(" ")[0][0].toLowerCase() +
+                        label.split(" ")[0].slice(1) +
+                        label.split(" ")[1][0].toUpperCase() +
+                        label.split(" ")[1].slice(1)
+                      : label.toLowerCase()) as keyof typeof value
+                  ].split("+62")[1]
+                }
+                onChange={(e) => {
+                  setValue({
+                    ...value,
+                    [(label.split(" ").length > 1
+                      ? label.split(" ")[0][0].toLowerCase() +
+                        label.split(" ")[0].slice(1) +
+                        label.split(" ")[1][0].toUpperCase() +
+                        label.split(" ")[1].slice(1)
+                      : label.toLowerCase()) as keyof typeof value]:
+                      e.target.value,
+                  });
+                }}
+              />
+            </InputPhone>
           ) : (
             <Input
               id={label}
