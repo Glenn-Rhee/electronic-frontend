@@ -94,7 +94,7 @@ export default function LoginForm({ xtr }: { xtr: string | undefined }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} method="POST">
         <div className="space-y-2">
           <FormField
             control={form.control}
