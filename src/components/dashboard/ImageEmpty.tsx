@@ -7,6 +7,7 @@ interface ImageEmptyProps {
 export default function ImageEmpty({ src, alt }: ImageEmptyProps) {
   return (
     <Image
+      priority
       src={src}
       alt={alt}
       height={225}

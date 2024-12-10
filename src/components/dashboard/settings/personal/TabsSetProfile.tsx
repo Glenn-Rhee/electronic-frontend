@@ -10,6 +10,7 @@ import { Image, Loader2, MousePointerSquareDashed } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/utils/uploadthing";
 import ErrorFile from "./ErrorFile";
+import ImageUser from "../../ImageUser";
 
 interface TabsSetProfileProps {
   dataStore: DataStore;
@@ -35,6 +36,7 @@ export interface DataUserState {
 
 export default function TabsSetProfile(props: TabsSetProfileProps) {
   const { dataStore, dataUser } = props;
+  const [key, setKey] = useState<string>("");
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [errorFile, setErrorFile] = useState<
     | undefined
@@ -68,6 +70,7 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
       setDataUserState({ ...dataUserState, urlImage: data.url });
+      setKey(data.key);
     },
     onUploadProgress(p) {
       setUploaddProgress(p);
@@ -94,13 +97,18 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
     setIsDragOver(false);
   };
   const onDropAccepted = (acceptedFiles: File[]) => {
-    // startUpload(acceptedFiles);
+    startUpload(acceptedFiles);
     setFiles(acceptedFiles);
     setErrorFile(undefined);
     setIsDragOver(false);
   };
 
-  function handleSave() {
+  async function handleSave() {
+    const response = await fetch("/api/delete?key=" + key, {
+      method: "DELETE",
+    });
+
+    await response.json();
     startUpload(files);
   }
 
@@ -201,9 +209,11 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
                 <MousePointerSquareDashed className="h-6 w-6 text-zinc-500 mb-2" />
               ) : isUploading ? (
                 <Loader2 className="animate-spin h-6 w-6 text-zinc-500 mb-2" />
-              ) : (
+              ) : dataUserState.urlImage === "" ? (
                 // eslint-disable-next-line jsx-a11y/alt-text
                 <Image className="h-6 w-6 text-zinc-500 mb-2" />
+              ) : (
+                <ImageUser src={dataUserState.urlImage} />
               )}
 
               <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">

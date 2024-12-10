@@ -36,6 +36,8 @@ export default function Profile(props: ProfileProps) {
         throw new Error(dataResponse.message);
       }
 
+      localStorage.removeItem("first");
+
       toast({
         title: "Sucess!",
         description: dataResponse.message,
