@@ -18,8 +18,6 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
-
 import SubTitle from "@/components/dashboard/auth/SubTitle";
 import AuthAction from "./AuthAction";
 import { useEffect, useState } from "react";
@@ -27,26 +25,8 @@ import { useToast } from "@/hooks/use-toast";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import InputPhone from "../InputPhone";
+import { formSchema } from "@/lib/schema";
 
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(5, { message: "Username must be at least 5 characters" }),
-  fullname: z.string(),
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" }),
-  confirmPassword: z.string(),
-  phone: z
-    .string()
-    .min(10, { message: "Phone number must be at least 10 " })
-    .refine((value) => {
-      const phoneNumber = parsePhoneNumberFromString("+62" + value);
-      return phoneNumber && phoneNumber.isValid();
-    }),
-  dateOfBirth: z.string().date("Invalid date of birth"),
-});
 
 export default function SignupForm() {
   const form = useForm<z.infer<typeof formSchema>>({

@@ -21,7 +21,6 @@ import {
   Repeat,
   Users,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 interface CardProps {
   label: string;
@@ -43,14 +42,6 @@ interface DashboardProps {
 export default function Dashboard(props: DashboardProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { dataTransaction } = props;
-  const router = useRouter();
-  const first = localStorage.getItem("first");
-  if (!first) {
-    localStorage.setItem("first", "true");
-    router.refresh();
-  }
-
-  console.log(first);
   const cardData: CardProps[] = [
     {
       label: "Total Revenue",

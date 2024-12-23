@@ -3,7 +3,7 @@ import ShellProfile from "./ShellProfile";
 import ProfileInfo from "./ProfileInfo";
 import { Button } from "@/components/ui/button";
 import { DataStore, DataUser } from "@/app/settings/personal/page";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { Input } from "@/components/ui/input";
 import { Image, Loader2, MousePointerSquareDashed } from "lucide-react";
@@ -11,6 +11,9 @@ import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/utils/uploadthing";
 import ErrorFile from "./ErrorFile";
 import ImageUser from "../../ImageUser";
+import { Label } from "@/components/ui/label";
+import InputPhone from "../../InputPhone";
+import { useToast } from "@/hooks/use-toast";
 
 interface TabsSetProfileProps {
   dataStore: DataStore;
@@ -19,7 +22,6 @@ interface TabsSetProfileProps {
 
 export interface DataUserState {
   phone: string;
-  email: string;
   address: string;
   sosmed: string;
   username: string;
@@ -48,8 +50,7 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [uploadProgress, setUploaddProgress] = useState<number>(45);
   const [dataUserState, setDataUserState] = useState({
-    phone: dataUser.phone,
-    email: dataUser.email,
+    phone: dataUser.phone.split("62")[1],
     address: dataUser.address,
     sosmed: dataUser.sosmed,
     username: dataUser.username,
@@ -66,6 +67,7 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
       Object.keys(dataStore).length > 0 ? dataStore.accountNumber : "",
     urlImage: Object.keys(dataStore).length > 0 ? dataStore.urlImage : "",
   });
+  const { toast } = useToast();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
@@ -110,23 +112,198 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
 
     await response.json();
     startUpload(files);
+
+    const data: DataUserState = {
+      phone: dataUserState.phone,
+      address: dataUserState.address,
+      sosmed: dataUserState.sosmed,
+      username: dataUserState.username,
+      fullname: dataUserState.fullname,
+      accountNumber: dataUserState.accountNumber,
+      bankName: dataUserState.bankName,
+      closeStore: dataUserState.closeStore,
+      openStore: dataUserState.openStore,
+      storeCategory: dataUserState.storeCategory.toUpperCase(),
+      storeDescription: dataUserState.storeDescription,
+      storeName: dataUserState.storeName,
+      urlImage: dataUserState.urlImage,
+    };
+
+    try {
+      for (const key in data) {
+        if (data[key as keyof typeof data] === "") {
+          throw new Error("Please fill " + key + " field properly");
+        }
+      }
+
+      console.log(data)
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error!",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error!",
+          description: "An unknown error occurred.",
+          variant: "destructive",
+        });
+      }
+    }
+
+    console.log(data);
   }
+
+  useEffect(() => {
+    const regex = /[^0-9]/g;
+    if (regex.test(dataUserState.phone)) {
+      setDataUserState((prev) => ({
+        ...prev,
+        phone: dataUserState.phone.replace(regex, ""),
+      }));
+    }
+  }, [dataUserState.phone, setDataUserState]);
+
+  useEffect(() => {
+    const regex = /[^0-9:]/g;
+
+    if (regex.test(dataUserState.openStore)) {
+      const arrayOpenStore = dataUserState.openStore.split(":");
+      if (arrayOpenStore.length > 1) {
+        setDataUserState((prev) => ({
+          ...prev,
+          openStore: dataUserState.openStore.replace(
+            regex,
+            `${+arrayOpenStore[0] ? arrayOpenStore[0] : ""}:${
+              +arrayOpenStore[1] ? arrayOpenStore[1] : ""
+            }`
+          ),
+        }));
+      } else {
+        setDataUserState((prev) => ({
+          ...prev,
+          openStore: dataUserState.openStore.replace(regex, ""),
+        }));
+      }
+    }
+
+    const [hour, minute] = dataUserState.openStore.split(":");
+
+    if (hour.length === 1) {
+      if (+hour > 2) {
+        setDataUserState((prev) => ({
+          ...prev,
+          openStore: "0" + hour + ":" + minute,
+        }));
+      }
+    } else {
+      if (+hour > 23) {
+        const temporary = +hour - 23;
+        setDataUserState((prev) => ({
+          ...prev,
+          openStore: `0${temporary - 1}:` + minute,
+        }));
+      }
+    }
+
+    if (dataUserState.openStore.includes(":")) {
+      if (minute.length === 1) {
+        if (+minute > 5) {
+          setDataUserState((prev) => ({
+            ...prev,
+            openStore: hour + ":0" + minute,
+          }));
+        }
+      }
+    }
+  }, [dataUserState.openStore]);
+
+  useEffect(() => {
+    const regex = /[^0-9:]/g;
+    if (regex.test(dataUserState.closeStore)) {
+      const arrayCloseStore = dataUserState.closeStore.split(":");
+      if (arrayCloseStore.length > 1) {
+        setDataUserState((prev) => ({
+          ...prev,
+          closeStore: dataUserState.closeStore.replace(
+            regex,
+            `${+arrayCloseStore[0] ? arrayCloseStore[0] : ""}:${
+              +arrayCloseStore[1] ? arrayCloseStore[1] : ""
+            }`
+          ),
+        }));
+      } else {
+        setDataUserState((prev) => ({
+          ...prev,
+          closeStore: dataUserState.closeStore.replace(regex, ""),
+        }));
+      }
+    }
+
+    const [hour, minute] = dataUserState.closeStore.split(":");
+
+    if (hour.length === 1) {
+      if (+hour > 2) {
+        setDataUserState((prev) => ({
+          ...prev,
+          closeStore: "0" + hour + minute,
+        }));
+      }
+    } else {
+      if (+hour > 23) {
+        const temporary = +hour - 23;
+        setDataUserState((prev) => ({
+          ...prev,
+          closeStore: `0${temporary - 1}:${minute}`,
+        }));
+      }
+    }
+
+    if (dataUserState.closeStore.includes(":")) {
+      if (minute.length === 1) {
+        if (+minute > 5) {
+          setDataUserState((prev) => ({
+            ...prev,
+            closeStore: hour + ":0" + minute,
+          }));
+        }
+      }
+    }
+  }, [dataUserState.closeStore]);
+
+  useEffect(() => {
+    const regex = /[^0-9]/g;
+
+    if (regex.test(dataUserState.accountNumber)) {
+      setDataUserState((prev) => ({
+        ...prev,
+        accountNumber: dataUserState.accountNumber.replace(regex, ""),
+      }));
+    }
+  }, [dataUserState.accountNumber]);
 
   return (
     <div className="mt-4">
       <ShellProfile title="Contact">
-        <ProfileInfo
-          label="Phone"
-          value={dataUserState}
-          setValue={setDataUserState}
-          isSet
-        />
-        <ProfileInfo
-          label="Email"
-          value={dataUserState}
-          setValue={setDataUserState}
-          isSet
-        />
+        <div className="flex flex-col">
+          <Label className="text-sm text-gray-500" htmlFor="phone">
+            Phone
+          </Label>
+          <InputPhone className="mt-1">
+            <Input
+              id="phone"
+              className="border border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none placeholder:text-sm placeholder:text-gray-600"
+              type="text"
+              maxLength={13}
+              value={dataUserState.phone}
+              onChange={(e) =>
+                setDataUserState({ ...dataUserState, phone: e.target.value })
+              }
+            />
+          </InputPhone>
+        </div>
         <ProfileInfo
           label="Address"
           value={dataUserState}

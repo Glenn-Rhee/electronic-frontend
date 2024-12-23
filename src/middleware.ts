@@ -23,6 +23,6 @@ export const config = {
     "/settings/:path*",
     "/products/:path*",
     "/orders/:path*",
-    "/:path"
+    "/:path",
   ],
 };

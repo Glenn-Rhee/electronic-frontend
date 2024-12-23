@@ -9,11 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import "pickerjs/dist/picker.css";
 import { Textarea } from "@/components/ui/textarea";
 import { DataUserState } from "./TabsSetProfile";
-import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import InputPhone from "../../InputPhone";
@@ -28,8 +27,6 @@ interface ProfileInfoProps {
 
 export default function ProfileInfo(props: ProfileInfoProps) {
   const { label, value, isSet, setValue, children } = props;
-  const [openStore, setOpenStore] = useState<string>("00:00");
-  const [closeStore, setCloseStore] = useState<string>("00:00");
 
   return (
     <div className="flex flex-col">
@@ -62,23 +59,92 @@ export default function ProfileInfo(props: ProfileInfoProps) {
               </SelectContent>
             </Select>
           ) : label.toLowerCase().includes("hours") ? (
-            <div className="flex flex-col md:flex-row md:items-center gap-3 mt-1">
-              <div className="flex flex-col justify-center mt-1 md:mt-0">
-                <TimePicker
-                  value={openStore}
-                  onChange={(e) => setOpenStore(e || "00:00")}
-                  required
-                />
+            <div className="mt-1 grid grid-cols-2 gap-x-2">
+              <div className="flex flex-col justify-center itemscenter mt-1 w-full md:mt-0">
+                <div className="flex items-center gap-x-1">
+                  <div className="lg:w-[35%] w-1/4 bg-white border border-gray-400 rounded-sm flex items-center justify-center">
+                    <Input
+                      maxLength={2}
+                      value={value.openStore.split(":")[0]}
+                      inputMode="numeric"
+                      className="flex w-1/2 border text-xs p-0 m-0 border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none"
+                      onChange={(e) => {
+                        const hour = e.target.value;
+                        setValue({
+                          ...value,
+                          openStore: `${hour}:${
+                            value.openStore.split(":").length > 1
+                              ? value.openStore.split(":")[1]
+                              : ""
+                          }`,
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="lg:w-[35%] w-1/4 bg-white border border-gray-400 px-1 py-0 rounded-sm flex items-center justify-center">
+                    <Input
+                      maxLength={2}
+                      value={value.openStore.split(":")[1]}
+                      inputMode="numeric"
+                      className="flex w-1/2 border text-xs p-0 m-0 border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none"
+                      onChange={(e) => {
+                        setValue({
+                          ...value,
+                          openStore: `${
+                            value.openStore.split(":").length > 1
+                              ? value.openStore.split(":")[0]
+                              : ""
+                          }:${e.target.value}`,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
                 <Label htmlFor="opentime" className="text-sm text-gray-600">
                   Open Time
                 </Label>
               </div>
-              <div className="flex flex-col justify-center">
-                <TimePicker
-                  value={closeStore}
-                  onChange={(e) => setCloseStore(e || "00:00")}
-                />
-                <Label htmlFor="closetime" className="text-sm text-gray-600">
+              <div className="flex flex-col justify-center itemscenter mt-1 w-full md:mt-0">
+                <div className="flex items-center gap-x-1">
+                  <div className="lg:w-[35%] w-1/4 bg-white border border-gray-400 rounded-sm flex items-center justify-center">
+                    <Input
+                      maxLength={2}
+                      value={value.closeStore.split(":")[0]}
+                      inputMode="numeric"
+                      className="flex w-1/2 border text-xs p-0 m-0 border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none"
+                      onChange={(e) => {
+                        const hour = e.target.value;
+                        setValue({
+                          ...value,
+                          closeStore: `${hour}:${
+                            value.closeStore.split(":").length > 1
+                              ? value.closeStore.split(":")[1]
+                              : ""
+                          }`,
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="lg:w-[35%] w-1/4 bg-white border border-gray-400 px-1 py-0 rounded-sm flex items-center justify-center">
+                    <Input
+                      maxLength={2}
+                      value={value.closeStore.split(":")[1]}
+                      inputMode="numeric"
+                      className="flex w-1/2 border text-xs p-0 m-0 border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none"
+                      onChange={(e) => {
+                        setValue({
+                          ...value,
+                          closeStore: `${
+                            value.closeStore.split(":").length > 1
+                              ? value.closeStore.split(":")[0]
+                              : ""
+                          }:${e.target.value}`,
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+                <Label htmlFor="opentime" className="text-sm text-gray-600">
                   Close Time
                 </Label>
               </div>
@@ -101,6 +167,7 @@ export default function ProfileInfo(props: ProfileInfoProps) {
                 id={label}
                 className="border border-none focus:ring-0 focus-visible:ring-0 focus:outline-none focus:border-none placeholder:text-sm placeholder:text-gray-600"
                 type="text"
+                maxLength={13}
                 value={
                   value[
                     (label.split(" ").length > 1
@@ -140,6 +207,7 @@ export default function ProfileInfo(props: ProfileInfoProps) {
                     : label.toLowerCase()) as keyof typeof value
                 ]
               }
+              maxLength={label.includes("Account") ? 17 : 255}
               onChange={(e) => {
                 setValue({
                   ...value,
