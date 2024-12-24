@@ -25,7 +25,7 @@ export default function AsideProfile(props: AsideProfileProps) {
             width={120}
             height={120}
             alt="Profile store"
-            className="rounded-full w-auto"
+            className="rounded-full w-auto aspect-square"
           />
         )}
         <h4 className="text-2xl font-bold mt-2">

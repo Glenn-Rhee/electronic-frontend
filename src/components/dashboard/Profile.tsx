@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { DataStore, ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useXtr } from "@/lib/store/xtrStore";
+import { useUrlStore } from "@/lib/store/urlStore";
 
 interface ProfileProps {
   xtr: string | undefined;
@@ -25,10 +27,13 @@ export default function Profile(props: ProfileProps) {
   const router = useRouter();
   const [dataStore, setDataStore] = useState<DataStore | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { urlImage } = useUrlStore();
+  const { setXtr } = useXtr();
 
   useEffect(() => {
     const getInfo = async () => {
       try {
+        setXtr(xtr);
         const response = await fetch(
           process.env.NEXT_PUBLIC_BASE_URL + "/store",
           {
@@ -64,7 +69,7 @@ export default function Profile(props: ProfileProps) {
     };
 
     getInfo();
-  }, [xtr, toast]);
+  }, [xtr, toast, setXtr, urlImage]);
 
   async function logout() {
     try {
@@ -110,18 +115,21 @@ export default function Profile(props: ProfileProps) {
           <Button variant="ghost" className="h-fit w-fit mb-2">
             {isLoading ? (
               <LoaderCircle className="animate-spin" size={50} />
-            ) :  dataStore && Object.keys(dataStore).length === 0 ? (
+            ) : dataStore && Object.keys(dataStore).length === 0 ? (
               <div className="rounded-full bg-gray-400 flex items-center justify-center p-4">
                 <User size={50} color="white" />
               </div>
-            ) : dataStore && Object.keys(dataStore).length > 0 && (
-              <Avatar className="shadow-lg shadow-black/25">
-                <AvatarImage src={dataStore.urlImage} />
-                <AvatarFallback>
-                  {dataStore.storeName.split(" ")[0][0].toUpperCase() +
-                    dataStore.storeName.split(" ")[0][0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+            ) : (
+              dataStore &&
+              Object.keys(dataStore).length > 0 && (
+                <Avatar className="shadow-lg shadow-black/25">
+                  <AvatarImage src={dataStore.urlImage} />
+                  <AvatarFallback>
+                    {dataStore.storeName.split(" ")[0][0].toUpperCase() +
+                      dataStore.storeName.split(" ")[0][0].toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              )
             )}
           </Button>
         </DropdownMenuTrigger>

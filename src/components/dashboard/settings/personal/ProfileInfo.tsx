@@ -37,7 +37,7 @@ export default function ProfileInfo(props: ProfileInfoProps) {
           </Label>
           {label.toLowerCase().includes("category") ? (
             <Select
-              value={value.storeCategory}
+              value={value.storeCategory.toLowerCase()}
               onValueChange={(e) => {
                 setValue({
                   ...value,
@@ -47,7 +47,7 @@ export default function ProfileInfo(props: ProfileInfoProps) {
             >
               <SelectTrigger className="mt-1 border focus:outline-none border-slate-800">
                 <SelectValue
-                  placeholder={value.storeCategory}
+                  placeholder={value.storeCategory.toLowerCase()}
                   className="text-sm text-red-500"
                 />
               </SelectTrigger>

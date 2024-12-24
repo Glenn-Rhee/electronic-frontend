@@ -14,6 +14,10 @@ import ImageUser from "../../ImageUser";
 import { Label } from "@/components/ui/label";
 import InputPhone from "../../InputPhone";
 import { useToast } from "@/hooks/use-toast";
+import { useXtr } from "@/lib/store/xtrStore";
+import { ResponseDefault } from "@/types";
+import { useRouter } from "next/navigation";
+import { useUrlStore } from "@/lib/store/urlStore";
 
 interface TabsSetProfileProps {
   dataStore: DataStore;
@@ -38,7 +42,10 @@ export interface DataUserState {
 
 export default function TabsSetProfile(props: TabsSetProfileProps) {
   const { dataStore, dataUser } = props;
-  const [key, setKey] = useState<string>("");
+  const { xtr } = useXtr();
+  const router = useRouter();
+  const [urlImageState, setUrlImageState] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [errorFile, setErrorFile] = useState<
     | undefined
@@ -68,11 +75,12 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
     urlImage: Object.keys(dataStore).length > 0 ? dataStore.urlImage : "",
   });
   const { toast } = useToast();
+  const { setUrlImage } = useUrlStore();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
+      setUrlImageState(data.url);
       setDataUserState({ ...dataUserState, urlImage: data.url });
-      setKey(data.key);
     },
     onUploadProgress(p) {
       setUploaddProgress(p);
@@ -106,28 +114,56 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
   };
 
   async function handleSave() {
-    const response = await fetch("/api/delete?key=" + key, {
-      method: "DELETE",
-    });
-
-    await response.json();
-    startUpload(files);
-
-    const { storeCategory, ...rest } = dataUserState;
-
-    const data: DataUserState = {
-      ...rest,
-      storeCategory: storeCategory.toUpperCase(),
-    };
-
+    setIsLoading(true);
     try {
-      for (const key in data) {
-        if (data[key as keyof typeof data] === "") {
-          throw new Error("Please fill " + key + " field properly");
+      setDataUserState({
+        ...dataUserState,
+        urlImage: urlImageState,
+      });
+      for (const key in dataUserState) {
+        if (dataUserState[key as keyof typeof dataUserState] === "") {
+          const title = key.includes("url") ? "Image" : key;
+          throw new Error("Please fill " + title + " field properly");
         }
       }
 
-      console.log(data);
+      const { storeCategory, phone, ...rest } = dataUserState;
+
+      const data: DataUserState = {
+        ...rest,
+        phone: "+62" + phone,
+        storeCategory: storeCategory.toUpperCase(),
+      };
+
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BASE_URL + "/store",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: xtr || "",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
+        }
+      );
+
+      setUrlImage(data.urlImage);
+
+      const dataResponse = (await response.json()) as ResponseDefault;
+      if (dataResponse.status === "failed") {
+        throw new Error(dataResponse.message);
+      }
+
+      toast({
+        title: "Success!",
+        description: "Your profile has been updated.",
+        variant: "default",
+      });
+
+      setIsLoading(false);
+
+      router.refresh();
     } catch (error) {
       if (error instanceof Error) {
         toast({
@@ -142,9 +178,9 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
           variant: "destructive",
         });
       }
-    }
 
-    console.log(data);
+      setIsLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -429,8 +465,16 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
         />
       </ShellProfile>
       <div className="flex items-center px-2 justify-center">
-        <Button className="w-full" onClick={handleSave}>
-          Save
+        <Button
+          disabled={isLoading || isUploading}
+          className="w-full"
+          onClick={handleSave}
+        >
+          {isLoading || isUploading ? (
+            <Loader2 className="text-white animate-spin" />
+          ) : (
+            "Save"
+          )}
         </Button>
       </div>
     </div>

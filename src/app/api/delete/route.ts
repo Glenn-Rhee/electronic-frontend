@@ -10,7 +10,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     const utapi = new UTApi();
-  const response =  await utapi.deleteFiles(key);
+    const response = await utapi.deleteFiles(key);
 
     return NextResponse.json(response);
   } catch (error) {

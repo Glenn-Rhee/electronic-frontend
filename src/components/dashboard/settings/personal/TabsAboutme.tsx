@@ -14,6 +14,7 @@ export default function TabsAboutme(props: TabsAboutmeProps) {
   const gender =
     dataUser.gender.charAt(0).toUpperCase() +
     dataUser.gender.slice(1).toLowerCase();
+  console.log(dataStore.urlImage);
 
   return (
     <div className="mt-4">
