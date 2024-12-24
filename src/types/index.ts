@@ -6,3 +6,16 @@ export interface ResponseDefault {
   data?: any;
   error?: any;
 }
+
+export interface DataStore {
+  id: string;
+  storeName: string;
+  storeDescription: string;
+  storeCategory: string;
+  openStore: string;
+  closeStore: string;
+  urlImage: string;
+  bankId: string;
+  accountNumber: string;
+  bankName: string;
+}

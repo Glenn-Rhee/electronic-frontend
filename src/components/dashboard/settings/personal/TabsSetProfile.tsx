@@ -113,20 +113,11 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
     await response.json();
     startUpload(files);
 
+    const { storeCategory, ...rest } = dataUserState;
+
     const data: DataUserState = {
-      phone: dataUserState.phone,
-      address: dataUserState.address,
-      sosmed: dataUserState.sosmed,
-      username: dataUserState.username,
-      fullname: dataUserState.fullname,
-      accountNumber: dataUserState.accountNumber,
-      bankName: dataUserState.bankName,
-      closeStore: dataUserState.closeStore,
-      openStore: dataUserState.openStore,
-      storeCategory: dataUserState.storeCategory.toUpperCase(),
-      storeDescription: dataUserState.storeDescription,
-      storeName: dataUserState.storeName,
-      urlImage: dataUserState.urlImage,
+      ...rest,
+      storeCategory: storeCategory.toUpperCase(),
     };
 
     try {
@@ -136,7 +127,7 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
         }
       }
 
-      console.log(data)
+      console.log(data);
     } catch (error) {
       if (error instanceof Error) {
         toast({

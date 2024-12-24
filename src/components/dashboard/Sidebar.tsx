@@ -13,14 +13,13 @@ import Profile from "./Profile";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { DataStore } from "@/app/settings/personal/page";
 
 interface SidebarProps {
-  dataStore: DataStore;
+  xtr: string | undefined;
 }
 
 export default function Sidebar(props: SidebarProps) {
-  const { dataStore } = props;
+  const { xtr } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
 
@@ -47,7 +46,7 @@ export default function Sidebar(props: SidebarProps) {
         )}
       >
         <div className="flex justify-center">
-          <Profile dataStore={dataStore} />
+          <Profile xtr={xtr} />
         </div>
         <Nav
           links={[
