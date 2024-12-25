@@ -11,6 +11,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useXtr } from "@/lib/store/xtrStore";
+import { ResponseDefault } from "@/types";
+import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 
 interface SettingOptions<Tvalue> {
@@ -26,6 +30,9 @@ interface SettingsProps {
 
 export default function Settings(props: SettingsProps) {
   const { data } = props;
+  const { toast } = useToast();
+  const { xtr } = useXtr();
+  const router = useRouter();
   const [revenue, setRevenue] = useState<"ABLE" | "DISABLE">(
     data!.revenue.toLowerCase() as SettingsState
   );
@@ -84,7 +91,51 @@ export default function Settings(props: SettingsProps) {
       sales: sales.toUpperCase(),
       orders: orders.toUpperCase(),
     };
-    console.log(data);
+
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BASE_URL + "/settings",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: xtr || "",
+          },
+          body: JSON.stringify(data),
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save settings");
+      }
+
+      const dataResponse = (await response.json()) as ResponseDefault;
+      if (dataResponse.status === "failed") {
+        throw new Error(dataResponse.message);
+      }
+
+      toast({
+        title: "Success!",
+        description: "Settings saved successfully",
+        variant: "default",
+      });
+      router.refresh();
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error!",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error!",
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+      }
+    }
   }
 
   return (

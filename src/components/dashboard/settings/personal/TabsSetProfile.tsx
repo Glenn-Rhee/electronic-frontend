@@ -44,7 +44,6 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
   const { dataStore, dataUser } = props;
   const { xtr } = useXtr();
   const router = useRouter();
-  const [urlImageState, setUrlImageState] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [errorFile, setErrorFile] = useState<
@@ -79,7 +78,6 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
-      setUrlImageState(data.url);
       setDataUserState({ ...dataUserState, urlImage: data.url });
     },
     onUploadProgress(p) {
@@ -116,10 +114,6 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
   async function handleSave() {
     setIsLoading(true);
     try {
-      setDataUserState({
-        ...dataUserState,
-        urlImage: urlImageState,
-      });
       for (const key in dataUserState) {
         if (dataUserState[key as keyof typeof dataUserState] === "") {
           const title = key.includes("url") ? "Image" : key;

@@ -31,44 +31,46 @@ export default function Profile(props: ProfileProps) {
   const { setXtr } = useXtr();
 
   useEffect(() => {
-    const getInfo = async () => {
-      try {
-        setXtr(xtr);
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_BASE_URL + "/store",
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              Authorization: xtr || "",
-            },
+    if (xtr) {
+      const getInfo = async () => {
+        try {
+          setXtr(xtr);
+          const response = await fetch(
+            process.env.NEXT_PUBLIC_BASE_URL + "/store",
+            {
+              method: "GET",
+              credentials: "include",
+              headers: {
+                Authorization: xtr || "",
+              },
+            }
+          );
+
+          const dataResponse = (await response.json()) as ResponseDefault;
+          if (dataResponse.status === "failed") {
+            throw new Error(dataResponse.message);
           }
-        );
-
-        const dataResponse = (await response.json()) as ResponseDefault;
-        if (dataResponse.status === "failed") {
-          throw new Error(dataResponse.message);
+          setDataStore(dataResponse.data);
+          setIsLoading(false);
+        } catch (error) {
+          if (error instanceof Error) {
+            toast({
+              title: "Error!",
+              description: error.message,
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "Error!",
+              description: "Internal server Error!",
+              variant: "destructive",
+            });
+          }
         }
-        setDataStore(dataResponse.data);
-        setIsLoading(false);
-      } catch (error) {
-        if (error instanceof Error) {
-          toast({
-            title: "Error!",
-            description: error.message,
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Error!",
-            description: "Internal server Error!",
-            variant: "destructive",
-          });
-        }
-      }
-    };
+      };
 
-    getInfo();
+      getInfo();
+    }
   }, [xtr, toast, setXtr, urlImage]);
 
   async function logout() {
