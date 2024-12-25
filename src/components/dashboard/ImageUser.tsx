@@ -1,13 +1,19 @@
 import Image from "next/image";
 
-export default function ImageUser({ src }: { src: string }) {
+export default function ImageUser({
+  src,
+  size,
+}: {
+  src: string;
+  size?: number;
+}) {
   return (
     <Image
       priority
       src={src}
       className="w-auto"
-      width={200}
-      height={200}
+      width={size || 200}
+      height={size || 200}
       alt={"Avatar user"}
     />
   );
