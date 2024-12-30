@@ -57,7 +57,7 @@ export const addProductSchema = z.object({
   description: z
     .string({ message: "Invalid type of description" })
     .min(1, "Description must be at least 1 character"),
-  imageUrl: z
+  urlImage: z
     .string({ message: "Invalid type of image url" })
     .url("Invalid url"),
   price: z.number({ message: "Invalid type of price" }),

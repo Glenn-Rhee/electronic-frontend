@@ -26,11 +26,12 @@ export default function Profile(props: ProfileProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [dataStore, setDataStore] = useState<DataStore | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { urlImage } = useUrlStore();
   const { setXtr } = useXtr();
 
   useEffect(() => {
+    setIsLoading(true)
     if (xtr) {
       const getInfo = async () => {
         try {

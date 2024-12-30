@@ -19,7 +19,6 @@ export async function DELETE(req: NextRequest) {
     } else if (error instanceof UploadThingError) {
       return NextResponse.json({ status: "failed", message: error.message });
     } else {
-      console.log(error);
       return NextResponse.json({
         status: "failed",
         message: "Internal server error",

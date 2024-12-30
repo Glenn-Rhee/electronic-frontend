@@ -82,7 +82,6 @@ export default function SignupForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      console.log(values);
       const ismatch = values.password === values.confirmPassword;
       if (!ismatch) {
         throw new Error("Password doesn't match!");
@@ -140,7 +139,6 @@ export default function SignupForm() {
           variant: "destructive",
         });
       } else {
-        console.log(error);
         toast({
           title: "Error!",
           description: "An unknown error occurred.",

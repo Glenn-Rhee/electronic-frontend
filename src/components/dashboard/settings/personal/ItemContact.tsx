@@ -8,15 +8,16 @@ interface ItemContactProps {
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
+  size?: number;
   className?: string;
 }
 
 export default function ItemContact(props: ItemContactProps) {
-  const { label, value, className } = props;
+  const { label, value, className, size } = props;
 
   return (
     <div className="flex items-center gap-x-5">
-      <props.icon className={className} />
+      <props.icon className={className} size={size} />
       <ProfileInfo label={label}>{value}</ProfileInfo>
     </div>
   );

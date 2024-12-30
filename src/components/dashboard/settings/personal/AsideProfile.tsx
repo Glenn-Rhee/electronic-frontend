@@ -55,6 +55,7 @@ export default function AsideProfile(props: AsideProfileProps) {
             label="Address"
             value={dataUser.address === "" ? "-" : dataUser.address}
             className="text-red-600"
+            size={40}
             icon={LocateFixed}
           />
           <ItemContact

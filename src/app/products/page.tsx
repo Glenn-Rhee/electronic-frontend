@@ -51,7 +51,7 @@ export default async function ProductPage() {
       throw new Error(dataResponse.message);
     }
 
-    dataProducts = dataProducts;
+    dataProducts = dataResponse.data;
   } catch (error) {
     if (error instanceof Error) {
       errorMsg = error.message;
@@ -87,7 +87,7 @@ export default async function ProductPage() {
           </DialogContent>
         </Dialog>
       </div>
-      <TableProduct />
+      <TableProduct dataProduct={dataProducts} />
     </div>
   ) : (
     <TableEmpty title="Your product is empty" isProduct>

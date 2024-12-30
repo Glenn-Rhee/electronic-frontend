@@ -16,6 +16,10 @@ import UploadImage from "./products/UploadImage";
 import { useToast } from "@/hooks/use-toast";
 import { addProductSchema } from "@/lib/schema";
 import { ZodError } from "zod";
+import { useXtr } from "@/lib/store/xtrStore";
+import { ResponseDefault } from "@/types";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function TitleDialog(props: { children: React.ReactNode }) {
   const { children } = props;
@@ -26,7 +30,7 @@ function TitleDialog(props: { children: React.ReactNode }) {
 
 interface DataProduct {
   productName?: string;
-  category?: "laptop" | "accessory" | "";
+  category?: "laptop" | "accessories" | "";
   brand?: string;
   description?: string;
   id?: string;
@@ -43,6 +47,8 @@ interface DialogBodyProps {
 export default function DialogBody(props: DialogBodyProps) {
   const { data } = props;
   const { toast } = useToast();
+  const { xtr } = useXtr();
+  const router = useRouter();
   const [product, setProduct] = useState<DataProduct>({
     brand: data?.brand || "",
     category: data?.category || "",
@@ -55,6 +61,7 @@ export default function DialogBody(props: DialogBodyProps) {
     tag: data?.tag || "",
   });
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const regex = /[^0-9.]/g;
@@ -121,6 +128,7 @@ export default function DialogBody(props: DialogBodyProps) {
   }
 
   async function handleSubmit() {
+    setLoading(true);
     try {
       const price = +product.price!.replace(/\./g, "");
       const stock = +product.stock!.replace(/\./g, "");
@@ -129,25 +137,60 @@ export default function DialogBody(props: DialogBodyProps) {
         category: product.category!.toUpperCase(),
         brand: product.brand,
         description: product.description,
-        imageUrl,
+        urlImage: imageUrl,
         price,
         stock,
         discount: +product.discount!,
-        tag: product.tag, 
+        tag: product.tag,
       };
       addProductSchema.parse(data);
 
-      console.log(data);
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BASE_URL + "/product",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: xtr || "",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Something went wrong");
+      }
+
+      const dataResponse = (await response.json()) as ResponseDefault;
+      if (dataResponse.status === "failed") {
+        throw new Error(dataResponse.message);
+      }
+
+      toast({
+        title: "Success!",
+        description: "Product added successfully",
+      });
+
+      setLoading(false);
+      router.refresh();
+      setProduct({
+        brand: "",
+        category: "",
+        description: "",
+        id: "",
+        productName: "",
+        price: "0",
+        discount: "0",
+        stock: "0",
+        tag: "",
+      });
+      setImageUrl("");
     } catch (error) {
       if (error instanceof ZodError) {
-        let message = "";
-        error.errors.map((err) => {
-          message += err.message + ", ";
-        });
-
         toast({
           title: "Error!",
-          description: message,
+          description: error.errors[0].message,
           variant: "destructive",
         });
       } else if (error instanceof Error) {
@@ -163,6 +206,7 @@ export default function DialogBody(props: DialogBodyProps) {
           variant: "destructive",
         });
       }
+      setLoading(false);
     }
   }
 
@@ -200,7 +244,7 @@ export default function DialogBody(props: DialogBodyProps) {
               </SelectTrigger>
               <SelectContent className="">
                 <SelectItem value="laptop">Laptop</SelectItem>
-                <SelectItem value="accessory">Accsessory</SelectItem>
+                <SelectItem value="accessories">Accessories</SelectItem>
               </SelectContent>
             </Select>
             <Label htmlFor="brand" className="mt-3">
@@ -234,7 +278,11 @@ export default function DialogBody(props: DialogBodyProps) {
             />
           </div>
         </div>
-        <UploadImage imageUrl={imageUrl} setImageUrl={setImageUrl} />
+        <UploadImage
+          setLoading={setLoading}
+          imageUrl={imageUrl}
+          setImageUrl={setImageUrl}
+        />
       </div>
       <div className="flex flex-col gap-y-1 mt-6">
         <TitleDialog>Product Price</TitleDialog>
@@ -284,26 +332,38 @@ export default function DialogBody(props: DialogBodyProps) {
             className="placeholder:text-gray-600"
             value={product.discount}
             onChange={(e) => {
-              setProduct({ ...product, discount: e.target.value });
+              const val = e.target.value;
+              const regex = /^[1-9]\d*$/;
+
+              if (val === "" || regex.test(val) || val === "0") {
+                setProduct({ ...product, discount: val });
+              }
             }}
             maxLength={3}
           />
+
           <Label htmlFor="tag" className="mt-3">
             Tag
           </Label>
-
-          <Input
-            id="tag"
-            type="text"
-            placeholder="Tag"
-            className="placeholder:text-gray-600"
-            value={product.tag}
-            onChange={(e) => setProduct({ ...product, tag: e.target.value })}
-          />
+          <div className="flex flex-col gap-y-2">
+            <Input
+              id="tag"
+              type="text"
+              placeholder="Tag"
+              className="placeholder:text-gray-600"
+              value={product.tag}
+              onChange={(e) => setProduct({ ...product, tag: e.target.value })}
+            />
+          </div>
         </div>
       </div>
-      <Button className="mt-6" type="submit" onClick={handleSubmit}>
-        Submit
+      <Button
+        className="mt-6"
+        disabled={loading}
+        type="submit"
+        onClick={handleSubmit}
+      >
+        {loading ? <Loader2 className="animate-spin text-white" /> : "Submit"}
       </Button>
     </div>
   );

@@ -22,159 +22,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import DialogBody from "./DialogBody";
 import Link from "next/link";
+import { DataProducts } from "@/app/products/page";
 
-export default function TableProduct() {
-  const dataProduct: Product[] = [
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-    {
-      id: "ORD271829",
-      name: "Laptop Acer",
-      category: "laptop",
-      brand: "ACER",
-      price: 20000000,
-      stock: 10,
-      picture: "/img/prof.jpg",
-    },
-  ];
+interface TableProductProps {
+  dataProduct: DataProducts[] | [];
+}
+
+export default function TableProduct(props: TableProductProps) {
+  const { dataProduct } = props;
 
   return <DataTable className="mt-4" columns={columns} data={dataProduct} />;
 }
 
-type Product = {
-  id: string;
-  name: string;
-  category: "laptop" | "accessory";
-  brand: string;
-  price: number;
-  stock: number;
-  picture: string;
+interface Product extends DataProducts {
   action?: "edit" | "delete";
-};
+}
 
 const columns: ColumnDef<Product>[] = [
   {
@@ -190,25 +52,25 @@ const columns: ColumnDef<Product>[] = [
     ),
   },
   {
-    accessorKey: "picture",
-    header: "Picture",
-    cell: () => {
+    accessorKey: "urlImage",
+    header: "Image",
+    cell: ({ row }) => {
       return (
         <div className="flex gap-2 items-center">
           <Image
             width={40}
             height={40}
             alt="Avatar"
-            src="/img/prof.jpg"
-            className="rounded-full"
+            src={row.original.urlImage}
+            className="rounded-full aspect-square"
           />
         </div>
       );
     },
   },
   {
-    accessorKey: "name",
-    header: "Name",
+    accessorKey: "productName",
+    header: "Product Name",
   },
   {
     accessorKey: "category",
@@ -255,8 +117,8 @@ const columns: ColumnDef<Product>[] = [
                     id: "1",
                     productName: "Laptop ACER",
                     description: "Laptop ACER",
-                    price: 20000000,
-                    stock: 15,
+                    price: "20000000",
+                    stock: "15",
                     tag: "laptop",
                   }}
                 />

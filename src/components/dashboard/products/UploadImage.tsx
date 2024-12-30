@@ -11,10 +11,11 @@ import ErrorFile from "../settings/personal/ErrorFile";
 interface UploadImageProps {
   imageUrl: string;
   setImageUrl: Dispatch<SetStateAction<string>>;
+  setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function UploadImage(props: UploadImageProps) {
-  const { imageUrl, setImageUrl } = props;
+  const { imageUrl, setImageUrl, setLoading } = props;
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [errorFile, setErrorFile] = useState<
     undefined | { title: string; description: string }
@@ -24,6 +25,7 @@ export default function UploadImage(props: UploadImageProps) {
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
+      setLoading(false);
       setImageUrl(data.url);
     },
     onUploadProgress(p) {
@@ -54,6 +56,7 @@ export default function UploadImage(props: UploadImageProps) {
   };
 
   const onDropAccepted = (acceptedFiles: File[]) => {
+    setLoading(true);
     startUpload(acceptedFiles);
     setFiles(acceptedFiles);
     setErrorFile(undefined);
