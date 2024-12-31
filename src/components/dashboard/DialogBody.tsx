@@ -28,7 +28,7 @@ function TitleDialog(props: { children: React.ReactNode }) {
   );
 }
 
-interface DataProduct {
+export interface DataProduct {
   productName?: string;
   category?: "laptop" | "accessories" | "";
   brand?: string;
@@ -37,30 +37,42 @@ interface DataProduct {
   price?: string;
   discount?: string;
   stock?: string;
-  tag?: string;
+  tag?: Tag;
+  urlImage?: string;
+}
+
+interface Tag {
+  id: string | undefined;
+  tagName: string;
 }
 
 interface DialogBodyProps {
   data?: DataProduct;
+  isEdit?: boolean;
 }
 
 export default function DialogBody(props: DialogBodyProps) {
-  const { data } = props;
+  const { data, isEdit } = props;
   const { toast } = useToast();
   const { xtr } = useXtr();
   const router = useRouter();
   const [product, setProduct] = useState<DataProduct>({
     brand: data?.brand || "",
-    category: data?.category || "",
+    category: (data && data.category
+      ? data.category.toLowerCase()
+      : "") as DataProduct["category"],
     description: data?.description || "",
     id: data?.id || "",
     productName: data?.productName || "",
-    price: data?.price || "0",
-    discount: data?.discount || "0",
-    stock: data?.stock || "0",
-    tag: data?.tag || "",
+    price: data?.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") || "0",
+    discount: data?.discount?.toString() || "0",
+    stock: data?.stock?.toString() || "0",
+    tag: {
+      id: data?.tag?.id || "",
+      tagName: data?.tag?.tagName || "",
+    },
+    urlImage: data?.urlImage || "",
   });
-  const [imageUrl, setImageUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -132,23 +144,25 @@ export default function DialogBody(props: DialogBodyProps) {
     try {
       const price = +product.price!.replace(/\./g, "");
       const stock = +product.stock!.replace(/\./g, "");
+      const tag = product.tag!.tagName!.replace(/,(?=\s*$)/, "");
       const data = {
         productName: product.productName,
         category: product.category!.toUpperCase(),
         brand: product.brand,
         description: product.description,
-        urlImage: imageUrl,
+        urlImage: product.urlImage,
         price,
         stock,
         discount: +product.discount!,
-        tag: product.tag,
+        tag,
       };
       addProductSchema.parse(data);
+      const query = isEdit ? `?id=${product.id}&idTag=${product.tag?.id}` : "";
 
       const response = await fetch(
-        process.env.NEXT_PUBLIC_BASE_URL + "/product",
+        process.env.NEXT_PUBLIC_BASE_URL + "/product" + query,
         {
-          method: "POST",
+          method: isEdit ? "PUT" : "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
@@ -169,7 +183,7 @@ export default function DialogBody(props: DialogBodyProps) {
 
       toast({
         title: "Success!",
-        description: "Product added successfully",
+        description: `Product ${isEdit ? "edited" : "added"} successfully`,
       });
 
       setLoading(false);
@@ -183,9 +197,12 @@ export default function DialogBody(props: DialogBodyProps) {
         price: "0",
         discount: "0",
         stock: "0",
-        tag: "",
+        tag: {
+          id: "",
+          tagName: "",
+        },
+        urlImage: "",
       });
-      setImageUrl("");
     } catch (error) {
       if (error instanceof ZodError) {
         toast({
@@ -202,7 +219,7 @@ export default function DialogBody(props: DialogBodyProps) {
       } else {
         toast({
           title: "Error!",
-          description: "Please fill all fields properly",
+          description: "An error occurred",
           variant: "destructive",
         });
       }
@@ -280,8 +297,8 @@ export default function DialogBody(props: DialogBodyProps) {
         </div>
         <UploadImage
           setLoading={setLoading}
-          imageUrl={imageUrl}
-          setImageUrl={setImageUrl}
+          imageUrl={product.urlImage!}
+          setImageUrl={setProduct}
         />
       </div>
       <div className="flex flex-col gap-y-1 mt-6">
@@ -296,7 +313,7 @@ export default function DialogBody(props: DialogBodyProps) {
             id="price"
             type="text"
             placeholder="Price"
-            value={product.price}
+            value={product.price ? product.price : ""}
             onKeyUp={(e) => {
               const formatted = handleKeyUp(e);
               setProduct({ ...product, price: formatted });
@@ -351,8 +368,13 @@ export default function DialogBody(props: DialogBodyProps) {
               type="text"
               placeholder="Tag"
               className="placeholder:text-gray-600"
-              value={product.tag}
-              onChange={(e) => setProduct({ ...product, tag: e.target.value })}
+              value={product.tag?.tagName}
+              onChange={(e) => {
+                setProduct((prev) => ({
+                  ...prev,
+                  tag: { id: prev.tag?.id, tagName: e.target.value },
+                }));
+              }}
             />
           </div>
         </div>

@@ -7,10 +7,11 @@ import Dropzone, { FileRejection } from "react-dropzone";
 import ImageUser from "../ImageUser";
 import { useUploadThing } from "@/utils/uploadthing";
 import ErrorFile from "../settings/personal/ErrorFile";
+import { DataProduct } from "../DialogBody";
 
 interface UploadImageProps {
   imageUrl: string;
-  setImageUrl: Dispatch<SetStateAction<string>>;
+  setImageUrl: Dispatch<SetStateAction<DataProduct>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -26,7 +27,10 @@ export default function UploadImage(props: UploadImageProps) {
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: ([data]) => {
       setLoading(false);
-      setImageUrl(data.url);
+      setImageUrl((prev) => ({
+        ...prev,
+        urlImage: data.url,
+      }));
     },
     onUploadProgress(p) {
       setUploadProgress(p);
