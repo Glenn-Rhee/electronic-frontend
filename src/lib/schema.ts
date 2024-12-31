@@ -60,7 +60,9 @@ export const addProductSchema = z.object({
   urlImage: z
     .string({ message: "Invalid type of image url" })
     .url("Invalid url"),
-  price: z.number({ message: "Invalid type of price" }),
+  price: z
+    .number({ message: "Invalid type of price" })
+    .min(1000, "Minimum of price is Rp 1.000"),
   stock: z
     .number({ message: "Invalid type of stock" })
     .min(1, "Stock must be at least 1"),

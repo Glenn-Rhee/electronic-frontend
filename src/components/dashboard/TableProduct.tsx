@@ -21,6 +21,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useXtr } from "@/lib/store/xtrStore";
 import { ResponseDefault } from "@/types";
+import { useRouter } from "next/navigation";
 
 interface TableProductProps {
   dataProduct: DataProducts[] | [];
@@ -32,6 +33,7 @@ export default function TableProduct(props: TableProductProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const { xtr } = useXtr();
+  const router = useRouter();
 
   async function handleEdit(row: Row<Product>) {
     try {
@@ -58,6 +60,47 @@ export default function TableProduct(props: TableProductProps) {
         ...responseData.data,
       });
       setOpen(true);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+      }
+    }
+  }
+
+  async function handleDelete(id: string) {
+    try {
+      const response = await fetch(
+        process.env.NEXT_PUBLIC_BASE_URL + "/product?id=" + id,
+        {
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            Authorization: xtr || "",
+          },
+        }
+      );
+
+      const dataResponse = (await response.json()) as ResponseDefault;
+      if (dataResponse.status === "failed") {
+        throw new Error(dataResponse.message);
+      }
+
+      toast({
+        title: "Success",
+        description: dataResponse.message,
+      });
+
+      router.refresh();
     } catch (error) {
       if (error instanceof Error) {
         toast({
@@ -153,19 +196,12 @@ export default function TableProduct(props: TableProductProps) {
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel
-                      onClick={async () => {
-                        const response = await fetch(
-                          process.env.NEXT_PUBLIC_BASE_URL + "/user",
-                          { method: "GET", credentials: "include" }
-                        );
-                        const dataresponse = await response.json();
-                        console.log(dataresponse);
-                      }}
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDelete(row.original.id)}
                     >
-                      Cancel
-                    </AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                      Yes
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

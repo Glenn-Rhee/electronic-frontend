@@ -31,7 +31,7 @@ export default function Profile(props: ProfileProps) {
   const { setXtr } = useXtr();
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (xtr) {
       const getInfo = async () => {
         try {
@@ -54,6 +54,7 @@ export default function Profile(props: ProfileProps) {
           setDataStore(dataResponse.data);
           setIsLoading(false);
         } catch (error) {
+          setIsLoading(false);
           if (error instanceof Error) {
             toast({
               title: "Error!",
