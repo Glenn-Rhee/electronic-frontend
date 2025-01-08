@@ -22,6 +22,8 @@ import { useXtr } from "@/lib/store/xtrStore";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Sorting from "@/lib/Sorting";
+import { useSorting } from "@/lib/store/sortingStore";
 
 interface TableProductProps {
   dataProduct: DataProducts[] | [];
@@ -30,7 +32,22 @@ interface TableProductProps {
 export default function TableProduct(props: TableProductProps) {
   const { dataProduct } = props;
   const [data, setData] = useState<DataProduct>();
+  const {
+    productName,
+    setProductName,
+    category,
+    setCategory,
+    brand,
+    setBrand,
+    price,
+    setPrice,
+    setStock,
+    stock,
+  } = useSorting();
   const [open, setOpen] = useState(false);
+  const [dataSorted, setDataSorted] = useState<DataProducts[] | []>(
+    dataProduct
+  );
   const { xtr } = useXtr();
   const router = useRouter();
 
@@ -59,6 +76,7 @@ export default function TableProduct(props: TableProductProps) {
         ...responseData.data,
       });
       setOpen(true);
+      router.refresh();
     } catch (error) {
       if (error instanceof Error) {
         toast.error("Error", {
@@ -150,26 +168,78 @@ export default function TableProduct(props: TableProductProps) {
     },
     {
       accessorKey: "productName",
-      header: "Product Name",
+      header: () => (
+        <button
+          onClick={async () => {
+            const response = await Sorting.sorted(
+              xtr,
+              productName,
+              "productName"
+            );
+            setProductName(!productName);
+            setDataSorted(response || []);
+          }}
+        >
+          Product name
+        </button>
+      ),
     },
     {
       accessorKey: "category",
-      header: "Category",
+      header: () => (
+        <button
+          onClick={async () => {
+            setDataSorted(
+              (await Sorting.sorted(xtr, category, "category")) || []
+            );
+            setCategory(!category);
+          }}
+        >
+          Category
+        </button>
+      ),
     },
     {
       accessorKey: "brand",
-      header: "Brand",
+      header: () => (
+        <button
+          onClick={async () => {
+            setDataSorted((await Sorting.sorted(xtr, brand, "brand")) || []);
+            setBrand(!brand);
+          }}
+        >
+          Brand
+        </button>
+      ),
     },
     {
       accessorKey: "price",
-      header: "Price",
+      header: () => (
+        <button
+          onClick={async () => {
+            setDataSorted((await Sorting.sorted(xtr, price, "price")) || []);
+            setPrice(!price);
+          }}
+        >
+          Price
+        </button>
+      ),
       cell: ({ row }) => (
         <span>Rp {row.original.price.toLocaleString("id-ID")}</span>
       ),
     },
     {
       accessorKey: "stock",
-      header: "Stock",
+      header: () => (
+        <button
+          onClick={async () => {
+            setDataSorted((await Sorting.sorted(xtr, stock, "stock")) || []);
+            setStock(!stock);
+          }}
+        >
+          Stock
+        </button>
+      ),
     },
     {
       accessorKey: "action",
@@ -214,7 +284,7 @@ export default function TableProduct(props: TableProductProps) {
 
   return (
     <>
-      <DataTable className="mt-4" columns={columns} data={dataProduct} />
+      <DataTable className="mt-4" columns={columns} data={dataSorted} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent aria-describedby="Dialog edit product">
           <DialogHeader>
