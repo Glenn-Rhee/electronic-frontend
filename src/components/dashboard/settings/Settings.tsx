@@ -11,11 +11,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
 import { useXtr } from "@/lib/store/xtrStore";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
+import { toast } from "sonner";
 
 interface SettingOptions<Tvalue> {
   placeholder: string;
@@ -30,7 +30,6 @@ interface SettingsProps {
 
 export default function Settings(props: SettingsProps) {
   const { data } = props;
-  const { toast } = useToast();
   const { xtr } = useXtr();
   const router = useRouter();
   const [revenue, setRevenue] = useState<"ABLE" | "DISABLE">(
@@ -115,24 +114,24 @@ export default function Settings(props: SettingsProps) {
         throw new Error(dataResponse.message);
       }
 
-      toast({
-        title: "Success!",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: "Settings saved successfully",
-        variant: "default",
       });
       router.refresh();
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Error!",
-          description: "Something went wrong",
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: "An error occurred",
         });
       }
     }

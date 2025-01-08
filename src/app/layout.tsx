@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SidebarNav from "@/components/dashboard/SidebarNav";
 import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Dashboard Admin",

@@ -21,12 +21,11 @@ import { z } from "zod";
 import SubTitle from "@/components/dashboard/auth/SubTitle";
 import AuthAction from "./AuthAction";
 import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import InputPhone from "../InputPhone";
 import { formSchema } from "@/lib/schema";
-
+import { toast } from "sonner";
 
 export default function SignupForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,7 +46,6 @@ export default function SignupForm() {
 
   const date = form.watch("dateOfBirth");
   const phone = form.watch("phone");
-  const { toast } = useToast();
 
   useEffect(() => {
     const regex = /[^0-9-]/g;
@@ -113,10 +111,10 @@ export default function SignupForm() {
           dataResponse.statusCode === 402 ||
           dataResponse.message.includes("loged")
         ) {
-          toast({
-            title: "Error!",
+          toast.error("Error!", {
+            richColors: true,
+            duration: 1000,
             description: dataResponse.message as string,
-            variant: "destructive",
           });
 
           router.push("/");
@@ -124,25 +122,25 @@ export default function SignupForm() {
         throw new Error(dataResponse.message);
       }
 
-      toast({
-        title: "Success!",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: dataResponse.message,
-        variant: "default",
       });
 
       router.push("/");
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: "Error!",
-          description: error.message as string,
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: error.message,
         });
       } else {
-        toast({
-          title: "Error!",
-          description: "An unknown error occurred.",
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: "An error occurred",
         });
       }
 

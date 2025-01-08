@@ -13,13 +13,13 @@ import { Separator } from "../ui/separator";
 import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
 import UploadImage from "./products/UploadImage";
-import { useToast } from "@/hooks/use-toast";
 import { addProductSchema } from "@/lib/schema";
 import { ZodError } from "zod";
 import { useXtr } from "@/lib/store/xtrStore";
 import { ResponseDefault } from "@/types";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 function TitleDialog(props: { children: React.ReactNode }) {
   const { children } = props;
@@ -53,7 +53,6 @@ interface DialogBodyProps {
 
 export default function DialogBody(props: DialogBodyProps) {
   const { data, isEdit } = props;
-  const { toast } = useToast();
   const { xtr } = useXtr();
   const router = useRouter();
   const [product, setProduct] = useState<DataProduct>({
@@ -124,14 +123,12 @@ export default function DialogBody(props: DialogBodyProps) {
       }
 
       if (+product.discount > 100) {
-        toast({
-          title: "Error!",
+        toast("Error add discount", {
           description: "Discount must be less than 100%",
-          variant: "destructive",
         });
       }
     }
-  }, [product.discount, toast]);
+  }, [product.discount]);
 
   function handleKeyUp(e: KeyboardEvent<HTMLInputElement>) {
     const filteredValue = e.currentTarget.value.replace(/[^0-9]/g, "");
@@ -181,8 +178,9 @@ export default function DialogBody(props: DialogBodyProps) {
         throw new Error(dataResponse.message);
       }
 
-      toast({
-        title: "Success!",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: `Product ${isEdit ? "edited" : "added"} successfully`,
       });
 
@@ -205,27 +203,29 @@ export default function DialogBody(props: DialogBodyProps) {
       });
     } catch (error) {
       if (error instanceof ZodError) {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.errors[0].message,
-          variant: "destructive",
         });
       } else if (error instanceof Error) {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: "An error occurred",
-          variant: "destructive",
         });
       }
       setLoading(false);
     }
   }
+
+  console.log(product);
 
   return (
     <div className="flex px-1 flex-col overflow-auto">
@@ -248,7 +248,8 @@ export default function DialogBody(props: DialogBodyProps) {
               Category
             </Label>
             <Select
-              defaultValue={product.category}
+              defaultValue={"category"}
+              value={product.category === "" ? "category" : product.category}
               onValueChange={(e) =>
                 setProduct({
                   ...product,
@@ -257,9 +258,18 @@ export default function DialogBody(props: DialogBodyProps) {
               }
             >
               <SelectTrigger className="" id="category">
-                <SelectValue placeholder="Category" />
+                <SelectValue
+                  placeholder="Category"
+                  className="text-gray-500 placeholder:text-gray-500"
+                />
               </SelectTrigger>
               <SelectContent className="">
+                <SelectItem
+                  value="category"
+                  className="text-gray-400 hover:text-gray-400"
+                >
+                  Category
+                </SelectItem>
                 <SelectItem value="laptop">Laptop</SelectItem>
                 <SelectItem value="accessories">Accessories</SelectItem>
               </SelectContent>

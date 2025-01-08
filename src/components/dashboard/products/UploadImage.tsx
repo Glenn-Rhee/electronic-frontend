@@ -106,7 +106,7 @@ export default function UploadImage(props: UploadImageProps) {
               )}
 
               <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
-                {files.length > 0 && !isUploading ? (
+                {files.length > 0 && !isUploading && imageUrl !== "" ? (
                   <div className="flex flex-col items-center">
                     <p>{files[0].name}</p>
                   </div>

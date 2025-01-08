@@ -18,10 +18,10 @@ import DialogBody, { DataProduct } from "./DialogBody";
 import Link from "next/link";
 import { DataProducts } from "@/app/products/page";
 import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
 import { useXtr } from "@/lib/store/xtrStore";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface TableProductProps {
   dataProduct: DataProducts[] | [];
@@ -31,7 +31,6 @@ export default function TableProduct(props: TableProductProps) {
   const { dataProduct } = props;
   const [data, setData] = useState<DataProduct>();
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
   const { xtr } = useXtr();
   const router = useRouter();
 
@@ -62,16 +61,16 @@ export default function TableProduct(props: TableProductProps) {
       setOpen(true);
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: "Error",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Error",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: "Something went wrong",
-          variant: "destructive",
         });
       }
     }
@@ -95,24 +94,25 @@ export default function TableProduct(props: TableProductProps) {
         throw new Error(dataResponse.message);
       }
 
-      toast({
-        title: "Success",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: dataResponse.message,
       });
 
       router.refresh();
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: "Error",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Error",
-          description: "Something went wrong",
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: "An error occurred",
         });
       }
     }

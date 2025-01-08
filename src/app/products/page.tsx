@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ResponseDefault } from "@/types";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 
 export interface DataProducts {
@@ -28,6 +29,11 @@ export interface DataProducts {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export const metadata: Metadata = {
+  title: "Products Page",
+  description: "Show all products page",
+};
 
 export default async function ProductPage() {
   const xtr = cookies().get("xtr")?.value;

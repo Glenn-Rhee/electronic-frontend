@@ -14,8 +14,8 @@ import { Input } from "@/components/ui/input";
 import AuthAction from "./AuthAction";
 import { useState } from "react";
 import { ResponseDefault } from "@/types";
-import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -26,7 +26,6 @@ const formSchema = z.object({
 
 export default function LoginForm({ xtr }: { xtr: string | undefined }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,10 +55,10 @@ export default function LoginForm({ xtr }: { xtr: string | undefined }) {
       const dataResponse = (await response.json()) as ResponseDefault;
       if (dataResponse.status === "failed") {
         if (dataResponse.statusCode === 402) {
-          toast({
-            title: "Error!",
+          toast.error("Error", {
+            richColors: true,
+            duration: 1000,
             description: dataResponse.message as string,
-            variant: "destructive",
           });
 
           router.push("/");
@@ -67,26 +66,26 @@ export default function LoginForm({ xtr }: { xtr: string | undefined }) {
         throw new Error(dataResponse.message);
       }
 
-      toast({
-        title: "Success!",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: dataResponse.message,
-        variant: "default",
       });
 
       router.push("/");
     } catch (error) {
       setIsLoading(false);
       if (error instanceof Error) {
-        toast({
-          title: "Error!",
-          description: error.message as string,
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: error.message,
         });
       } else {
-        toast({
-          title: "Error!",
-          description: "An unknown error occurred.",
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: "An error occurred",
         });
       }
     }

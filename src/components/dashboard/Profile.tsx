@@ -10,12 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useToast } from "@/hooks/use-toast";
 import { DataStore, ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useXtr } from "@/lib/store/xtrStore";
 import { useUrlStore } from "@/lib/store/urlStore";
+import { toast } from "sonner";
 
 interface ProfileProps {
   xtr: string | undefined;
@@ -23,7 +23,6 @@ interface ProfileProps {
 
 export default function Profile(props: ProfileProps) {
   const { xtr } = props;
-  const { toast } = useToast();
   const router = useRouter();
   const [dataStore, setDataStore] = useState<DataStore | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,16 +55,16 @@ export default function Profile(props: ProfileProps) {
         } catch (error) {
           setIsLoading(false);
           if (error instanceof Error) {
-            toast({
-              title: "Error!",
+            toast.error("Error", {
+              richColors: true,
+              duration: 1000,
               description: error.message,
-              variant: "destructive",
             });
           } else {
-            toast({
-              title: "Error!",
+            toast.error("Error", {
+              richColors: true,
+              duration: 1000,
               description: "Internal server Error!",
-              variant: "destructive",
             });
           }
         }
@@ -73,7 +72,7 @@ export default function Profile(props: ProfileProps) {
 
       getInfo();
     }
-  }, [xtr, toast, setXtr, urlImage]);
+  }, [xtr, setXtr, urlImage]);
 
   async function logout() {
     try {
@@ -89,25 +88,25 @@ export default function Profile(props: ProfileProps) {
 
       localStorage.removeItem("first");
 
-      toast({
-        title: "Sucess!",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: dataResponse.message,
-        variant: "default",
       });
 
       router.push("/auth/login");
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: "Internal server Error!",
-          variant: "destructive",
         });
       }
     }

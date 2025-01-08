@@ -11,7 +11,7 @@ export default function ImageUser({
     <Image
       priority
       src={src}
-      className="w-auto"
+      className="w-auto max-w-20"
       width={size || 200}
       height={size || 200}
       alt={"Avatar user"}

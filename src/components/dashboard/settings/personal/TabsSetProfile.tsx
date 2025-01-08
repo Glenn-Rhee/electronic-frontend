@@ -13,11 +13,11 @@ import ErrorFile from "./ErrorFile";
 import ImageUser from "../../ImageUser";
 import { Label } from "@/components/ui/label";
 import InputPhone from "../../InputPhone";
-import { useToast } from "@/hooks/use-toast";
 import { useXtr } from "@/lib/store/xtrStore";
 import { ResponseDefault } from "@/types";
 import { useRouter } from "next/navigation";
 import { useUrlStore } from "@/lib/store/urlStore";
+import { toast } from "sonner";
 
 interface TabsSetProfileProps {
   dataStore: DataStore;
@@ -73,7 +73,6 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
       Object.keys(dataStore).length > 0 ? dataStore.accountNumber : "",
     urlImage: Object.keys(dataStore).length > 0 ? dataStore.urlImage : "",
   });
-  const { toast } = useToast();
   const { setUrlImage } = useUrlStore();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
@@ -149,10 +148,10 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
         throw new Error(dataResponse.message);
       }
 
-      toast({
-        title: "Success!",
+      toast.success("Success!", {
+        richColors: true,
+        duration: 1000,
         description: "Your profile has been updated.",
-        variant: "default",
       });
 
       setIsLoading(false);
@@ -160,16 +159,16 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
       router.refresh();
     } catch (error) {
       if (error instanceof Error) {
-        toast({
-          title: "Error!",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
           description: error.message,
-          variant: "destructive",
         });
       } else {
-        toast({
-          title: "Error!",
-          description: "An unknown error occurred.",
-          variant: "destructive",
+        toast.error("Error", {
+          richColors: true,
+          duration: 1000,
+          description: "An error occurred",
         });
       }
 
