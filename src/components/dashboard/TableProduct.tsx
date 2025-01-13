@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Sorting from "@/lib/Sorting";
 import { useSorting } from "@/lib/store/sortingStore";
+import Search from "./products/Search";
 
 interface TableProductProps {
   dataProduct: DataProducts[] | [];
@@ -233,6 +234,7 @@ export default function TableProduct(props: TableProductProps) {
       header: () => (
         <button
           onClick={async () => {
+            console.log(dataSorted);
             setDataSorted((await Sorting.sorted(xtr, stock, "stock")) || []);
             setStock(!stock);
           }}
@@ -284,6 +286,7 @@ export default function TableProduct(props: TableProductProps) {
 
   return (
     <>
+      <Search setDataSorted={setDataSorted} />
       <DataTable className="mt-4" columns={columns} data={dataSorted} />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent aria-describedby="Dialog edit product">

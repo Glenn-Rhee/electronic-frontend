@@ -30,9 +30,9 @@ export default function Profile(props: ProfileProps) {
   const { setXtr } = useXtr();
 
   useEffect(() => {
-    setIsLoading(true);
     if (xtr) {
       const getInfo = async () => {
+        setIsLoading(true)
         try {
           setXtr(xtr);
           const response = await fetch(

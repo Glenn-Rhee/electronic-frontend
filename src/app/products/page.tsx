@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { ResponseDefault } from "@/types";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
@@ -72,15 +71,10 @@ export default async function ProductPage() {
     <div className="w-full">
       <h1 className="text-3xl font-bold">Products Table</h1>
       <div className="flex justify-between gap-2 items-center mt-4">
-        <Input
-          type="search"
-          placeholder="Search item here..."
-          className="w-[50%] md:w-[40%] xl:w-[30%]"
-        />
         <Dialog>
           <DialogTrigger>
-            <span className="bg-blue-500 text-white px-4 py-2 rounded-md">
-              Add
+            <span className="bg-blue-500 text-white px-3 py-2 rounded-md">
+              Add Product
             </span>
           </DialogTrigger>
           <DialogContent aria-describedby="Content of product dialog">
