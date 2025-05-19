@@ -38,6 +38,8 @@ export interface DataUserState {
   bankName: string;
   accountNumber: string;
   urlImage: string;
+  city: string;
+  zipCode: string;
 }
 
 export default function TabsSetProfile(props: TabsSetProfileProps) {
@@ -55,7 +57,7 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
   >(undefined);
   const [files, setFiles] = useState<File[]>([]);
   const [uploadProgress, setUploaddProgress] = useState<number>(45);
-  const [dataUserState, setDataUserState] = useState({
+  const [dataUserState, setDataUserState] = useState<DataUserState>({
     phone: dataUser.phone.split("62")[1],
     address: dataUser.address,
     sosmed: dataUser.sosmed,
@@ -72,6 +74,8 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
     accountNumber:
       Object.keys(dataStore).length > 0 ? dataStore.accountNumber : "",
     urlImage: Object.keys(dataStore).length > 0 ? dataStore.urlImage : "",
+    city: Object.keys(dataStore).length > 0 ? dataStore.city : "",
+    zipCode: Object.keys(dataStore).length > 0 ? dataStore.zipCode : "",
   });
   const { setUrlImage } = useUrlStore();
 
@@ -127,7 +131,6 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
         phone: "+62" + phone,
         storeCategory: storeCategory.toUpperCase(),
       };
-
       const response = await fetch(
         process.env.NEXT_PUBLIC_BASE_URL + "/store",
         {
@@ -145,6 +148,10 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
 
       const dataResponse = (await response.json()) as ResponseDefault;
       if (dataResponse.status === "failed") {
+        if(dataResponse.error) {
+          throw new Error(dataResponse.error)
+        }
+
         throw new Error(dataResponse.message);
       }
 
@@ -332,6 +339,18 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
         />
         <ProfileInfo
           label="Sosmed"
+          value={dataUserState}
+          setValue={setDataUserState}
+          isSet
+        />
+        <ProfileInfo
+          label="City"
+          value={dataUserState}
+          setValue={setDataUserState}
+          isSet
+        />
+        <ProfileInfo
+          label="Zip Code"
           value={dataUserState}
           setValue={setDataUserState}
           isSet

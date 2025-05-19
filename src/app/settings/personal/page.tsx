@@ -15,6 +15,8 @@ export interface DataUser {
   phone: string;
   address: string;
   sosmed: string;
+  city: string;
+  zipCode: string;
 }
 
 export interface DataStore {
@@ -28,6 +30,8 @@ export interface DataStore {
   bankId: string;
   bankName: string;
   accountNumber: string;
+  city: string;
+  zipCode: string;
 }
 
 export default async function SettingsPersonalPage() {

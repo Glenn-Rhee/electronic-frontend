@@ -1,7 +1,14 @@
 import { DataStore, DataUser } from "@/app/settings/personal/page";
 import ItemContact from "@/components/dashboard/settings/personal/ItemContact";
 import { Separator } from "@/components/ui/separator";
-import { Instagram, LocateFixed, Mail, Phone, User } from "lucide-react";
+import {
+  Building2,
+  Instagram,
+  LocateFixed,
+  Mail,
+  Phone,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 
 interface AsideProfileProps {
@@ -57,6 +64,13 @@ export default function AsideProfile(props: AsideProfileProps) {
             className="text-red-600"
             size={40}
             icon={LocateFixed}
+          />
+          <ItemContact
+            label="City"
+            value={dataUser.city === "" ? "-" : dataUser.city}
+            icon={Building2}
+            size={25}
+            className="text-slate-800"
           />
           <ItemContact
             label="Instagram"

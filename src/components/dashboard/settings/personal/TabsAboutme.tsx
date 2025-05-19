@@ -22,6 +22,9 @@ export default function TabsAboutme(props: TabsAboutmeProps) {
         <ProfileInfo label="Fullname">{dataUser.fullname}</ProfileInfo>
         <ProfileInfo label="Gender">{gender}</ProfileInfo>
         <ProfileInfo label="Date of birth">{formattedDate}</ProfileInfo>
+        <ProfileInfo label="Zip Code">
+          {dataUser.zipCode === "" ? "-" : dataUser.zipCode}
+        </ProfileInfo>
       </ShellProfile>
       <ShellProfile title="Store Information">
         <ProfileInfo label="Store Name">

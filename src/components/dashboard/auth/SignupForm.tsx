@@ -113,7 +113,6 @@ export default function SignupForm() {
         ) {
           toast.error("Error!", {
             richColors: true,
-            duration: 1000,
             description: dataResponse.message as string,
           });
 
@@ -124,7 +123,6 @@ export default function SignupForm() {
 
       toast.success("Success!", {
         richColors: true,
-        duration: 1000,
         description: dataResponse.message,
       });
 
@@ -133,13 +131,11 @@ export default function SignupForm() {
       if (error instanceof Error) {
         toast.error("Error", {
           richColors: true,
-          duration: 1000,
           description: error.message,
         });
       } else {
         toast.error("Error", {
           richColors: true,
-          duration: 1000,
           description: "An error occurred",
         });
       }

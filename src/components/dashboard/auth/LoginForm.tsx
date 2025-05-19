@@ -68,7 +68,6 @@ export default function LoginForm({ xtr }: { xtr: string | undefined }) {
 
       toast.success("Success!", {
         richColors: true,
-        duration: 1000,
         description: dataResponse.message,
       });
 
@@ -78,13 +77,11 @@ export default function LoginForm({ xtr }: { xtr: string | undefined }) {
       if (error instanceof Error) {
         toast.error("Error", {
           richColors: true,
-          duration: 1000,
           description: error.message,
         });
       } else {
         toast.error("Error", {
           richColors: true,
-          duration: 1000,
           description: "An error occurred",
         });
       }
@@ -93,7 +90,13 @@ export default function LoginForm({ xtr }: { xtr: string | undefined }) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} method="POST">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit(onSubmit)();
+        }}
+        method="POST"
+      >
         <div className="space-y-2">
           <FormField
             control={form.control}
