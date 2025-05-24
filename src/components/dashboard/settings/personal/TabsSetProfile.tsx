@@ -44,6 +44,7 @@ export interface DataUserState {
 
 export default function TabsSetProfile(props: TabsSetProfileProps) {
   const { dataStore, dataUser } = props;
+  console.log(dataStore);
   const { xtr } = useXtr();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -74,8 +75,8 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
     accountNumber:
       Object.keys(dataStore).length > 0 ? dataStore.accountNumber : "",
     urlImage: Object.keys(dataStore).length > 0 ? dataStore.urlImage : "",
-    city: Object.keys(dataStore).length > 0 ? dataStore.city : "",
-    zipCode: Object.keys(dataStore).length > 0 ? dataStore.zipCode : "",
+    city: Object.keys(dataStore).length > 0 ? dataUser.city : "",
+    zipCode: Object.keys(dataStore).length > 0 ? dataUser.zipCode : "",
   });
   const { setUrlImage } = useUrlStore();
 
@@ -148,8 +149,8 @@ export default function TabsSetProfile(props: TabsSetProfileProps) {
 
       const dataResponse = (await response.json()) as ResponseDefault;
       if (dataResponse.status === "failed") {
-        if(dataResponse.error) {
-          throw new Error(dataResponse.error)
+        if (dataResponse.error) {
+          throw new Error(dataResponse.error);
         }
 
         throw new Error(dataResponse.message);

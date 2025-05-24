@@ -27,7 +27,7 @@ interface ProfileInfoProps {
 
 export default function ProfileInfo(props: ProfileInfoProps) {
   const { label, value, isSet, setValue, children } = props;
-  
+  // console.log(value)
   return (
     <div className="flex flex-col">
       {isSet && setValue && value ? (

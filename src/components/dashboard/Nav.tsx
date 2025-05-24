@@ -7,7 +7,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { usePathname } from "next/navigation";
 import { LucideIcon } from "lucide-react";
 
 interface NavProps {
@@ -22,7 +21,6 @@ interface NavProps {
 }
 
 export function Nav({ links, className }: NavProps) {
-  const pathname = usePathname();
 
   return (
     <TooltipProvider>
@@ -42,7 +40,7 @@ export function Nav({ links, className }: NavProps) {
                       href={item.href}
                       className={cn(
                         buttonVariants({
-                          variant: item.href === pathname ? "default" : "ghost",
+                          variant: item.variant,
                           size: "icon",
                         }),
                         "h-9 w-9 text-xl",
@@ -71,7 +69,7 @@ export function Nav({ links, className }: NavProps) {
                 href={item.href}
                 className={cn(
                   buttonVariants({
-                    variant: item.href === pathname ? "default" : "ghost",
+                    variant: item.variant,
                     size: "sm",
                   }),
                   item.variant === "default" &&

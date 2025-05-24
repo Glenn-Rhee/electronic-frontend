@@ -53,31 +53,31 @@ export default function Sidebar(props: SidebarProps) {
             {
               title: "Dashboard",
               icon: LayoutDashboard,
-              variant: "default",
+              variant: pathname === "/" ? "default" : "ghost",
               href: "/",
             },
             {
               title: "User",
               icon: UsersRound,
-              variant: "ghost",
+              variant: pathname === "/users" ? "default" : "ghost",
               href: "/users",
             },
             {
               title: "Orders",
               icon: ShoppingCart,
-              variant: "ghost",
+              variant: pathname === "/orders" ? "default" : "ghost",
               href: "/orders",
             },
             {
               title: "Products",
               icon: Cable,
-              variant: "ghost",
+              variant: pathname === "/products" ? "default" : "ghost",
               href: "/products",
             },
             {
               title: "Settings",
               icon: Settings,
-              variant: "ghost",
+              variant: pathname.includes("/settings") ? "default" : "ghost",
               href: "/settings",
             },
           ]}

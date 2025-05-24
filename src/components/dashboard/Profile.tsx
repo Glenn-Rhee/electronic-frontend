@@ -32,7 +32,7 @@ export default function Profile(props: ProfileProps) {
   useEffect(() => {
     if (xtr) {
       const getInfo = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
           setXtr(xtr);
           const response = await fetch(
@@ -116,15 +116,14 @@ export default function Profile(props: ProfileProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-fit w-fit mb-2">
-            {isLoading ? (
-              <LoaderCircle className="animate-spin" size={50} />
-            ) : dataStore && Object.keys(dataStore).length === 0 ? (
-              <div className="rounded-full bg-gray-400 flex items-center justify-center p-4">
-                <User size={50} color="white" />
-              </div>
-            ) : (
-              dataStore &&
-              Object.keys(dataStore).length > 0 && (
+            {
+              isLoading ? (
+                <LoaderCircle className="animate-spin" size={50} />
+              ) : dataStore && Object.keys(dataStore).length === 0 ? (
+                <div className="rounded-full bg-gray-400 flex items-center justify-center p-4">
+                  <User size={50} color="white" />
+                </div>
+              ) : dataStore ? (
                 <Avatar className="shadow-lg shadow-black/25">
                   <AvatarImage src={dataStore.urlImage} />
                   <AvatarFallback>
@@ -132,8 +131,13 @@ export default function Profile(props: ProfileProps) {
                       dataStore.storeName.split(" ")[0][0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+              ) : (
+                <div className="w-6 aspect-square">
+                  <LoaderCircle className="animate-spin" size={30} />
+                </div>
               )
-            )}
+              // )
+            }
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
